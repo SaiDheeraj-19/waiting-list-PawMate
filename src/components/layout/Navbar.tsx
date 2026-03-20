@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Menu, X, ArrowRight } from 'lucide-react';
 import { PawPrintSVG } from '../svg/PawPrintSVG';
+import { LogoSVG } from '../svg/LogoSVG';
 import { DogSVG } from '../svg/DogSVG';
 import { CatSVG } from '../svg/CatSVG';
 import { RabbitSVG } from '../svg/RabbitSVG';
@@ -39,8 +40,7 @@ export const Navbar = () => {
         <div className="flex justify-between items-center h-16 md:h-20">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2">
-            <PawPrintSVG size={28} color="#1A3D2B" />
-            <span className="font-playfair text-2xl font-bold text-primary">PawMate</span>
+            <LogoSVG size={160} />
           </Link>
 
           {/* Desktop Links */}

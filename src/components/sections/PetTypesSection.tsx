@@ -1,122 +1,165 @@
 'use client';
 
-import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import React, { useState, useEffect } from 'react';
+import { motion, AnimatePresence, LayoutGroup } from 'framer-motion';
+import { PawPrintSVG } from '../svg/PawPrintSVG';
 import { DogSVG } from '../svg/DogSVG';
 import { CatSVG } from '../svg/CatSVG';
 import { RabbitSVG } from '../svg/RabbitSVG';
 import { BirdSVG } from '../svg/BirdSVG';
-import { FishSVG } from '../svg/FishSVG';
-import { PawPrintSVG } from '../svg/PawPrintSVG';
+import { HeartPawSVG } from '../svg/HeartPawSVG';
+import { ArrowRight, BadgeCheck } from 'lucide-react';
 
-export const PetTypesSection = ({ perType }: { perType: { pet_type: string, count: number }[] }) => {
-  const [selected, setSelected] = useState<string | null>(null);
+interface PetTypeProps {
+  id: string;
+  label: string;
+  icon: React.ReactNode;
+  description: string;
+  tagline: string;
+  color: string;
+  count: number;
+}
 
-  const species = [
-    { 
-      id: 'dog', 
-      name: 'Dogs', 
-      icon: <DogSVG size={80} color="currentColor" />, 
-      color: 'bg-primary' ,
-      desc: 'From energetic puppies to calm seniors — find the perfect playdate partner or responsible breeding match in your city.'
-    },
-    { 
-      id: 'cat', 
-      name: 'Cats', 
-      icon: <CatSVG size={80} color="currentColor" />, 
-      color: 'bg-accent',
-      desc: 'Indoor cats need friends too. Find compatible cats for supervised playdates and kitten breeding connections.'
-    },
-    { 
-      id: 'rabbit', 
-      name: 'Rabbits', 
-      icon: <RabbitSVG size={80} color="currentColor" />, 
-      color: 'bg-primary',
-      desc: 'Rabbits bond deeply with companions. Help yours find a matched friend safely with owners who understand rabbit care.'
-    },
-    { 
-      id: 'bird', 
-      name: 'Birds', 
-      icon: <BirdSVG size={80} color="currentColor" />, 
-      color: 'bg-accent',
-      desc: 'Connect with other bird enthusiasts for aviary visits, breeding advice, and species-specific owner communities.'
-    },
-    { 
-      id: 'other', 
-      name: 'Other', 
-      icon: <div className="flex gap-1 overflow-hidden h-10 items-center justify-center scale-75 group-hover:scale-110 transition-transform"><DogSVG size={20}/><CatSVG size={20}/><RabbitSVG size={20}/><BirdSVG size={20}/></div>, 
-      color: 'bg-primary',
-      desc: 'Got a hamster, reptile, fish or exotic pet? PawMate welcomes every animal and every owner who loves them.'
-    },
-  ];
+const petTypes: Omit<PetTypeProps, 'count'>[] = [
+  {
+    id: 'dog',
+    label: 'Dogs',
+    tagline: 'Faithful companions, ready for adventure.',
+    icon: <DogSVG size={80} />,
+    description: "From morning park runs to quiet café tail-wags, PawMate finds your canine the perfect neighborhood pack. Filter by energy level and size.",
+    color: "bg-primary"
+  },
+  {
+    id: 'cat',
+    label: 'Cats',
+    tagline: 'Elegant souls, seeking quiet friendships.',
+    icon: <CatSVG size={80} />,
+    description: "Whether it's indoor playdates or safe breeding matches, connect with other feline enthusiasts who understand the unique bonds cats share.",
+    color: "bg-accent"
+  },
+  {
+    id: 'rabbit',
+    label: 'Rabbits',
+    tagline: 'Gentle spirits, social by nature.',
+    icon: <RabbitSVG size={80} />,
+    description: "Rabbits are deeply social animals. Connect with other 'binky' lovers to give your bun a friend to groom and forage with in safe environments.",
+    color: "bg-primary"
+  },
+  {
+    id: 'bird',
+    label: 'Birds',
+    tagline: 'Bright minds, soaring together.',
+    icon: <BirdSVG size={80} />,
+    description: "Smart, social, and communicative. Meet fellow bird parents for shared flying sessions or just a morning chirp-along in your local city.",
+    color: "bg-accent"
+  }
+];
+
+export const PetTypesSection = ({ perType }: { perType: { pet_type: string; count: number }[] }) => {
+  const [selected, setSelected] = useState<string>('dog');
 
   const getCount = (id: string) => {
-    return perType.find(t => t.pet_type === id)?.count || 0;
+    return perType?.find(p => p.pet_type === id)?.count || 0;
   };
 
   return (
-    <section id="pets" className="bg-white py-24 px-4 overflow-hidden">
-      <div className="max-w-7xl mx-auto">
-        <div className="text-center mb-16">
-          <h2 className="text-4xl md:text-5xl font-playfair font-black text-primary mb-4">For every kind of pet 🐾</h2>
-          <p className="text-xl font-dm-sans text-brand-muted max-w-xl mx-auto">Not just dogs — PawMate welcomes all animals</p>
+    <section id="pet-types" className="bg-brand-bg py-32 px-4 relative overflow-hidden">
+      <div className="max-w-7xl mx-auto relative z-10 font-dm-sans">
+        <div className="text-center mb-20 max-w-2xl mx-auto">
+          <motion.h2 
+            initial={{ opacity: 0, scale: 0.9 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            className="text-4xl md:text-7xl font-playfair font-black text-primary leading-tight mb-8"
+          >
+            Built for 
+            <span className="text-accent italic tracking-tight"> every animal </span> 
+            you love.
+          </motion.h2>
+          <p className="text-xl text-brand-muted font-bold leading-relaxed mb-12">Select a species to see how the PawMate ecosystem helps them thrive through social connection.</p>
         </div>
 
-        <div className="grid grid-cols-2 md:grid-cols-5 gap-6">
-          {species.map((item) => (
-            <motion.button 
-              key={item.id}
-              onClick={() => setSelected(selected === item.id ? null : item.id)}
-              className={`p-6 rounded-3xl border-2 transition-all group flex flex-col items-center gap-4 hover:shadow-2xl hover:shadow-primary/10
-                ${selected === item.id ? 'border-primary bg-primary/5' : 'border-transparent bg-white shadow-xl shadow-black/5'}`}
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-            >
-              <div className={`w-20 h-20 grow rounded-full flex items-center justify-center p-3 text-white shadow-lg ${item.color}`}>
-                {item.icon}
-              </div>
-              <span className="font-dm-sans font-black text-primary tracking-tight">{item.name}</span>
-              <div className="bg-accent/10 text-accent px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider shadow-sm group-hover:bg-accent group-hover:text-white transition-colors duration-300">
-                {getCount(item.id)} owners
-              </div>
-            </motion.button>
-          ))}
-        </div>
-
-        <AnimatePresence>
-          {selected && (
-            <motion.div 
-              initial={{ height: 0, opacity: 0 }}
-              animate={{ height: 'auto', opacity: 1 }}
-              exit={{ height: 0, opacity: 0 }}
-              className="mt-12 overflow-hidden bg-primary/5 rounded-[40px] px-8 md:px-16"
-            >
-              <div className="py-12 flex flex-col md:flex-row items-center gap-8 md:gap-16">
-                <div className="p-8 bg-white rounded-[40px] shadow-2xl shadow-primary/10 animate-float flex-shrink-0">
-                  {selected === 'other' ? (
-                    <div className="grid grid-cols-2 gap-4">
-                      <DogSVG size={40} className="text-primary"/>
-                      <CatSVG size={40} className="text-accent"/>
-                      <RabbitSVG size={40} className="text-primary"/>
-                      <BirdSVG size={40} className="text-accent"/>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
+          {/* Selective List list list choice choice choice */}
+          <div className="flex flex-col gap-4">
+            <LayoutGroup>
+              {petTypes.map((type) => (
+                <motion.button 
+                  key={type.id}
+                  onClick={() => setSelected(type.id)}
+                  className={`relative p-8 rounded-[40px] text-left transition-all duration-500 overflow-hidden group
+                    ${selected === type.id ? 'bg-white shadow-2xl shadow-primary/10' : 'bg-transparent hover:bg-white/40'}`}
+                >
+                  <div className="flex items-center gap-8 relative z-10">
+                    <div className={`w-16 h-16 rounded-[24px] flex items-center justify-center transition-all duration-700
+                      ${selected === type.id ? 'bg-primary text-white scale-110 shadow-xl' : 'bg-primary/5 text-primary'}`}>
+                      {type.icon}
                     </div>
-                  ) : (
-                    species.find(s => s.id === selected)?.icon
+                    <div>
+                      <h3 className="text-2xl font-playfair font-black text-primary mb-1">{type.label}</h3>
+                      <p className="text-sm font-black text-brand-muted uppercase tracking-[0.2em] opacity-60">{getCount(type.id).toLocaleString()} Active Owners</p>
+                    </div>
+                    <div className={`ml-auto ${selected === type.id ? 'opacity-100' : 'opacity-0'} transition-opacity`}>
+                      <BadgeCheck className="text-accent" size={32} />
+                    </div>
+                  </div>
+                  
+                  {selected === type.id && (
+                    <motion.div 
+                      layoutId="active-pill"
+                      className="absolute left-0 top-0 bottom-0 w-2 bg-accent rounded-full"
+                    />
                   )}
+                </motion.button>
+              ))}
+            </LayoutGroup>
+          </div>
+
+          {/* Dynamic dynamic dynamic display display display side */}
+          <AnimatePresence mode="wait">
+            <motion.div 
+              key={selected}
+              initial={{ opacity: 0, x: 50 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -50 }}
+              transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+              className="bg-white p-12 md:p-20 rounded-[64px] shadow-2xl shadow-primary/5 border-4 border-primary/5 flex flex-col relative overflow-hidden"
+            >
+              <div className="absolute -top-20 -right-20 opacity-[0.03] group-hover:rotate-12 transition-transform pointer-events-none">
+                 <PawPrintSVG size={400} />
+              </div>
+
+              <div className="mb-10">
+                <HeartPawSVG size={48} color="#F5A623" className="mb-8" />
+                <h4 className="text-3xl md:text-5xl font-playfair font-black text-primary leading-tight mb-6">
+                  {petTypes.find(t => t.id === selected)?.tagline}
+                </h4>
+                <p className="text-xl text-brand-muted leading-[1.8] font-medium opacity-80 mb-10">
+                  {petTypes.find(t => t.id === selected)?.description}
+                </p>
+              </div>
+
+              <div className="mt-auto flex flex-col items-stretch gap-6">
+                <div className="flex items-center justify-between p-6 bg-brand-bg rounded-[32px] border border-black/5">
+                   <div>
+                      <h5 className="text-xs font-dm-sans font-black text-brand-muted uppercase tracking-[0.3em] mb-1">Local Network 🌍</h5>
+                      <p className="text-xl font-playfair font-black text-primary">Priority search active in your city</p>
+                   </div>
+                   <div className="w-12 h-12 bg-primary text-white flex items-center justify-center rounded-2xl shadow-lg">
+                      <ArrowRight size={24} />
+                   </div>
                 </div>
-                <div className="text-center md:text-left">
-                  <h3 className="text-3xl font-playfair font-black text-primary mb-4 capitalize">{selected} matches</h3>
-                  <p className="text-xl font-dm-sans text-brand-muted leading-relaxed max-w-2xl">
-                    {species.find(s => s.id === selected)?.desc}
-                  </p>
-                  <button className="mt-8 bg-primary text-white font-dm-sans font-bold px-8 py-3 rounded-full hover:bg-accent transition-all duration-300 shadow-xl shadow-primary/20">
-                    Find {selected} owners →
-                  </button>
-                </div>
+
+                <a 
+                  href="#join-form"
+                  className="bg-primary text-white py-6 rounded-full font-black uppercase text-xs tracking-[0.4em] flex items-center justify-center gap-4 hover:bg-accent hover:text-primary transition-all duration-500 shadow-xl shadow-primary/20 group"
+                >
+                  Join the {selected} waitlist 🐾
+                  <ArrowRight size={18} className="group-hover:translate-x-2 transition-transform" />
+                </a>
               </div>
             </motion.div>
-          )}
-        </AnimatePresence>
+          </AnimatePresence>
+        </div>
       </div>
     </section>
   );

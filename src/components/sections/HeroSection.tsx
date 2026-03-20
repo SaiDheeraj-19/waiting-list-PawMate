@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion';
 import { PawPrintSVG } from '../svg/PawPrintSVG';
 import { HeartPawSVG } from '../svg/HeartPawSVG';
@@ -16,10 +16,10 @@ import { useRouter } from 'next/navigation';
 export const HeroSection = () => {
   const [email, setEmail] = useState('');
   const [loading, setLoading] = useState(false);
-  const [count, setCount] = useState(1234); // Mock initial count, real count will update
+  const [count] = useState(1234); 
   const router = useRouter();
 
-  // Mouse tilt effect forpet cards
+  // Mouse tilt effect for pet cards
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
   const rotateX = useSpring(useTransform(mouseY, [-300, 300], [10, -10]), { stiffness: 100, damping: 30 });
@@ -38,10 +38,9 @@ export const HeroSection = () => {
     if (!email) return;
     setLoading(true);
     try {
-      const result = await joinWaitlist({ email });
-      if (result.success) {
-        router.push(`/joined?code=${result.referral_code || ''}`);
-      } else if (result.error === 'already_exists') {
+      const referredBy = typeof window !== 'undefined' ? localStorage.getItem('referred_by') || undefined : undefined;
+      const result = await joinWaitlist({ email, referred_by: referredBy });
+      if (result.success || result.error === 'already_exists') {
         router.push(`/joined?code=${result.referral_code || ''}`);
       }
     } catch (err) {
@@ -64,7 +63,7 @@ export const HeroSection = () => {
 
   const itemVariants = {
     hidden: { y: 20, opacity: 0 },
-    visible: { y: 0, opacity: 1, transition: { duration: 0.5, ease: 'easeOut' } }
+    visible: { y: 0, opacity: 1, transition: { duration: 0.5 } }
   };
 
   return (
@@ -216,7 +215,7 @@ export const HeroSection = () => {
             <div className="flex -space-x-3">
               {['D', 'C', 'R', 'B', 'H'].map((initial, i) => (
                 <div 
-                  key={i} 
+                  key={initial} 
                   className={`w-10 h-10 rounded-full border-2 border-brand-bg flex items-center justify-center text-white font-bold text-sm shadow-sm
                     ${i % 2 === 0 ? 'bg-primary' : 'bg-accent'}`}
                 >
