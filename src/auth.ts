@@ -19,7 +19,8 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       if (user.email) {
         let city: string | undefined = undefined;
         try {
-          city = cookies().get("waitlist_city")?.value;
+          const cookieStore = await cookies();
+          city = cookieStore.get("waitlist_city")?.value;
         } catch {}
         
         // Automatically add them to the custom waitlist table and send Resend confirmation email based on your existing logic! 🐾 
