@@ -41,7 +41,7 @@ export async function joinWaitlist(data: {
 
     if (process.env.RESEND_API_KEY && process.env.RESEND_API_KEY !== 're_123456789') {
       await resend.emails.send({
-        from:    'PawMate <hello@pawmate.app>',
+        from:    'onboarding@resend.dev',
         to:      data.email,
         subject: '🐾 Your free PawMate spot is locked in!',
         html: `
