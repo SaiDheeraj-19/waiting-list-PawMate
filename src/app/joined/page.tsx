@@ -35,6 +35,7 @@ function JoinedContent() {
   const [referrals, setReferrals] = useState(0);
   const [petType, setPetType] = useState<string | null>(null);
   const [intent, setIntent] = useState<string | null>(null);
+  const [email, setEmail] = useState<string | null>(null);
   const [saved, setSaved] = useState(false);
 
   const referralLink = `${process.env.NEXT_PUBLIC_APP_URL || 'https://waitlist.pawmate.app'}/refer/${referralCode}`;
@@ -73,10 +74,14 @@ function JoinedContent() {
     const fetchRealData = async () => {
       const session = await getCurrentUserSession();
       if (session?.user?.email) {
+        setEmail(session.user.email);
         const entry = await getWaitlistEntryByEmail(session.user.email);
         if (entry) {
           if (!referralCode) setReferralCode(entry.referral_code || '');
           if (position === '1') setPosition(entry.position);
+          if (entry.pet_type) setPetType(entry.pet_type);
+          if (entry.intent) setIntent(entry.intent);
+          if (entry.pet_type && entry.intent) setSaved(true);
         }
       }
     };
@@ -90,11 +95,13 @@ function JoinedContent() {
   };
 
   const handleSavePreferences = async () => {
-    if (!petType || !intent) return;
-    // We don't have the user's email here easily without prop or context, 
-    // but in a real app would use a session or temp storage.
-    // For this demo, we'll just mock the success.
-    setSaved(true);
+    if (!petType || !intent || !email) return;
+    try {
+      await updatePetPreferences(email, petType, intent);
+      setSaved(true);
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   return (
