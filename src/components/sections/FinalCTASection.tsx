@@ -2,15 +2,13 @@
 
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { HeartPawSVG } from '../svg/HeartPawSVG';
-import { MapPin, ArrowRight } from 'lucide-react';
 import { PawPrintSVG } from '../svg/PawPrintSVG';
 import { useRouter } from 'next/navigation';
 import { joinWaitlist } from '@/app/actions/waitlist';
+import { ArrowRight } from 'lucide-react';
 
 export const FinalCTASection = () => {
   const [email, setEmail] = useState('');
-  const [city, setCity] = useState('');
   const [loading, setLoading] = useState(false);
   const router = useRouter();
 
@@ -20,7 +18,7 @@ export const FinalCTASection = () => {
     setLoading(true);
     try {
       const referredBy = typeof window !== 'undefined' ? localStorage.getItem('referred_by') || undefined : undefined;
-      const result = await joinWaitlist({ email, city, referred_by: referredBy });
+      const result = await joinWaitlist({ email, referred_by: referredBy });
       if (result.success || result.error === 'already_exists') {
         router.push(`/joined?code=${result.referral_code || ''}`);
       }
@@ -32,83 +30,53 @@ export const FinalCTASection = () => {
   };
 
   return (
-    <section className="bg-brand-bg py-32 px-4 relative flex flex-col items-center justify-center text-center overflow-hidden">
+    <section className="bg-primary py-64 md:py-80 px-4 relative flex flex-col items-center justify-center text-center overflow-hidden">
+      <div className="absolute top-0 left-0 w-full h-full opacity-[0.03] pointer-events-none select-none">
+        <PawPrintSVG size={800} color="#FAF8F4" />
+      </div>
+
       <motion.div 
         className="max-w-4xl mx-auto z-10"
-        initial={{ opacity: 0, y: 50 }}
-        whileInView={{ opacity: 1, y: 0 }}
+        initial={{ opacity: 0, scale: 0.95 }}
+        whileInView={{ opacity: 1, scale: 1 }}
         viewport={{ once: true }}
+        transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
       >
-        <div className="mb-12 flex flex-col items-center">
-          <motion.div 
-            className="p-8 bg-white rounded-full shadow-2xl mb-8 group cursor-pointer"
-            animate={{ scale: [1, 1.05, 1] }}
-            transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
-          >
-            <HeartPawSVG size={120} color="#1A3D2B" className="group-hover:scale-125 transition-transform" />
-          </motion.div>
-          <h2 className="text-4xl md:text-7xl font-playfair font-black text-primary leading-tight mb-6">
-            Your pet&apos;s best friend <br />
-            <span className="text-accent italic tracking-tight">is waiting for you.</span>
-          </h2>
-          <p className="text-xl font-dm-sans text-brand-muted max-w-2xl mx-auto mb-16 leading-relaxed">
-            Join the waitlist. It is free. Be first when we launch in your city.
-          </p>
-        </div>
+        <h2 className="text-5xl md:text-[110px] font-noto font-black text-[#FAF8F4] leading-[0.9] mb-12 tracking-tight">
+           Start your pet&apos;s <br /> <span className="text-accent italic">social journey.</span>
+        </h2>
+        
+        <p className="text-lg md:text-xl font-jakarta font-medium text-[#FAF8F4]/50 max-w-xl mx-auto mb-20">
+          Join 42,482+ other pet owners already on the list.
+        </p>
 
-        <div className="max-w-2xl mx-auto w-full px-4">
-          <form 
-            onSubmit={handleSubmit}
-            className="flex flex-col gap-6"
+        <form 
+          onSubmit={handleSubmit}
+          className="flex flex-col md:flex-row bg-white/10 backdrop-blur-3xl rounded-[3rem] p-2 md:p-3 w-full max-w-3xl mx-auto shadow-2xl shadow-primary/20 border border-white/10 transition-all focus-within:border-accent/40"
+        >
+          <input 
+            type="email" 
+            placeholder="Your best email" 
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+            className="flex-1 bg-transparent px-8 py-4 outline-none font-jakarta text-[#FAF8F4] placeholder:text-[#FAF8F4]/30 font-semibold"
+          />
+          <button 
+            type="submit" 
+            disabled={loading}
+            className="bg-accent text-primary font-jakarta font-black px-12 py-5 rounded-[2rem] flex items-center justify-center gap-3 hover:scale-105 transition-all group disabled:opacity-70 whitespace-nowrap"
           >
-            <div className="flex flex-col md:flex-row bg-white rounded-3xl md:rounded-full border-2 border-primary overflow-hidden shadow-2xl transition-all focus-within:ring-4 focus-within:ring-primary/10">
-              <div className="flex-1 flex items-center px-6 py-4">
-                <span className="text-xl mr-3 opacity-50">🐾</span>
-                <input 
-                  type="email" 
-                  placeholder="Enter your email..." 
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  required
-                  className="w-full bg-transparent outline-none font-dm-sans py-1 text-primary placeholder:text-brand-muted"
-                />
-              </div>
-              <button 
-                type="submit" 
-                disabled={loading}
-                className="bg-primary text-white font-dm-sans font-bold px-10 py-5 hover:bg-accent transition-all duration-300 md:rounded-none group disabled:opacity-70"
-              >
-                {loading ? (
-                  <div className="flex items-center gap-2 animate-spin">
-                    <PawPrintSVG size={20} color="white" />
-                  </div>
-                ) : (
-                  <span className="flex items-center gap-2">Join Free <ArrowRight size={20} className="group-hover:translate-x-1" /></span>
-                )}
-              </button>
-            </div>
+            {loading ? '🐾 Joining...' : (
+              <>Join the pack 🐾 <ArrowRight className="group-hover:translate-x-1" size={20} /></>
+            )}
+          </button>
+        </form>
 
-            {/* City input input input city */}
-            <div className="relative group max-w-sm mx-auto w-full">
-              <div className="absolute left-6 top-1/2 -translate-y-1/2 text-primary opacity-50"><MapPin size={18} /></div>
-              <input 
-                type="text" 
-                placeholder="Tell us your city (e.g. Bangalore)" 
-                value={city}
-                onChange={(e) => setCity(e.target.value)}
-                className="w-full bg-white border border-black/10 rounded-full px-12 py-3 text-sm font-dm-sans text-primary focus:outline-none focus:border-primary transition-colors hover:shadow-lg hover:shadow-black/5"
-              />
-              <div className="mt-4 text-xs font-dm-sans text-brand-muted font-medium opacity-70">
-                helps us launch there first ✨
-              </div>
-            </div>
-          </form>
+        <div className="mt-8 text-[11px] font-jakarta font-black text-[#FAF8F4]/30 uppercase tracking-[0.2em] animate-pulse">
+           Invite only. Secure your spot today.
         </div>
       </motion.div>
-
-      {/* Scattered scattered scattered scattered */}
-      <PawPrintSVG className="absolute top-20 left-[10%] opacity-10 animate-float" size={60} color="#F5A623" />
-      <PawPrintSVG className="absolute bottom-20 right-[15%] opacity-10 animate-float" size={100} color="#1A3D2B" style={{ animationDelay: '1.5s' }} />
     </section>
   );
 };

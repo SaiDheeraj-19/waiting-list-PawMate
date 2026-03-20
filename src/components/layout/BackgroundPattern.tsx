@@ -1,64 +1,37 @@
 'use client';
 
 import React from 'react';
-import { PawPrintSVG } from '../svg/PawPrintSVG';
-import { BoneSVG } from '../svg/BoneSVG';
-import { TailWagSVG } from '../svg/TailWagSVG';
+import { motion } from 'framer-motion';
 
 export const BackgroundPattern = () => {
   return (
-    <div className="bg-pattern-container">
-      {/* Manually scatter some SVGs for performance and predictability */}
-      <PawPrintSVG 
-        className="bg-pattern-item" 
-        style={{ top: '5%', left: '10%', transform: 'rotate(15deg) scale(0.4)' }} 
-        color="#1A3D2B" 
+    <div className="fixed inset-0 z-[-1] pointer-events-none overflow-hidden bg-[#FAF8F4]">
+      {/* Texture grain row row row row */}
+      <div className="absolute inset-0 opacity-[0.03] contrast-150 brightness-150 pointer-events-none" style={{ backgroundImage: 'url("https://www.transparenttextures.com/patterns/asfalt-dark.png")' }}></div>
+      
+      {/* Tonal BLOBS tonal blobs tonal blobs tonal blobs */}
+      <motion.div 
+        animate={{ 
+          x: [0, 50, 0],
+          y: [0, 100, 0],
+          scale: [1, 1.2, 1]
+        }}
+        transition={{ duration: 20, repeat: Infinity, ease: 'linear' }}
+        className="absolute top-[-20%] left-[-10%] w-[800px] h-[800px] bg-primary/5 rounded-full blur-[160px]"
       />
-      <BoneSVG 
-        className="bg-pattern-item" 
-        style={{ top: '15%', left: '85%', transform: 'rotate(-25deg) scale(0.5)' }} 
-        color="#F5A623" 
+
+      <motion.div 
+        animate={{ 
+          x: [0, -50, 0],
+          y: [0, -100, 0],
+          scale: [1, 1.3, 1]
+        }}
+        transition={{ duration: 25, repeat: Infinity, ease: 'linear' }}
+        className="absolute bottom-[-20%] right-[-10%] w-[1000px] h-[1000px] bg-accent/5 rounded-full blur-[200px]"
       />
-      <TailWagSVG 
-        className="bg-pattern-item" 
-        style={{ top: '40%', left: '5%', transform: 'rotate(10deg) scale(0.4)' }} 
-        color="#1A3D2B" 
-      />
-      <PawPrintSVG 
-        className="bg-pattern-item" 
-        style={{ top: '60%', left: '90%', transform: 'rotate(-45deg) scale(0.6)' }} 
-        color="#F5A623" 
-      />
-      <BoneSVG 
-        className="bg-pattern-item" 
-        style={{ top: '80%', left: '15%', transform: 'rotate(30deg) scale(0.5)' }} 
-        color="#1A3D2B" 
-      />
-      <PawPrintSVG 
-        className="bg-pattern-item" 
-        style={{ top: '30%', left: '50%', transform: 'rotate(50deg) scale(0.3)' }} 
-        color="#F5A623" 
-      />
-      <TailWagSVG 
-        className="bg-pattern-item" 
-        style={{ top: '70%', left: '40%', transform: 'rotate(-10deg) scale(0.4)' }} 
-        color="#1A3D2B" 
-      />
-      <PawPrintSVG 
-        className="bg-pattern-item" 
-        style={{ top: '10%', left: '40%', transform: 'rotate(20deg) scale(0.3)' }} 
-        color="#1A3D2B" 
-      />
-      <BoneSVG 
-        className="bg-pattern-item" 
-        style={{ top: '55%', left: '30%', transform: 'rotate(-15deg) scale(0.4)' }} 
-        color="#F5A623" 
-      />
-      <TailWagSVG 
-        className="bg-pattern-item" 
-        style={{ top: '25%', left: '75%', transform: 'rotate(40deg) scale(0.5)' }} 
-        color="#1A3D2B" 
-      />
+
+      {/* Grid subtle dots dots dots dots */}
+      <div className="absolute inset-0 opacity-[0.02]" style={{ backgroundImage: 'radial-gradient(#1A3D2B 1px, transparent 1px)', backgroundSize: '64px 64px' }}></div>
     </div>
   );
 };

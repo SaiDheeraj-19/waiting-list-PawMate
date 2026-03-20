@@ -7,23 +7,19 @@ import { HeartPawSVG } from '../svg/HeartPawSVG';
 import { DogSVG } from '../svg/DogSVG';
 import { CatSVG } from '../svg/CatSVG';
 import { RabbitSVG } from '../svg/RabbitSVG';
-import { CollarSVG } from '../svg/CollarSVG';
-import { TailWagSVG } from '../svg/TailWagSVG';
-import { FootprintTrailSVG } from '../svg/FootprintTrailSVG';
 import { joinWaitlist } from '@/app/actions/waitlist';
 import { useRouter } from 'next/navigation';
+import { ArrowRight } from 'lucide-react';
 
 export const HeroSection = () => {
   const [email, setEmail] = useState('');
   const [loading, setLoading] = useState(false);
-  const [count] = useState(1234); 
   const router = useRouter();
 
-  // Mouse tilt effect for pet cards
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
-  const rotateX = useSpring(useTransform(mouseY, [-300, 300], [10, -10]), { stiffness: 100, damping: 30 });
-  const rotateY = useSpring(useTransform(mouseX, [-300, 300], [-10, 10]), { stiffness: 100, damping: 30 });
+  const rotateX = useSpring(useTransform(mouseY, [-300, 300], [5, -5]), { stiffness: 100, damping: 30 });
+  const rotateY = useSpring(useTransform(mouseX, [-300, 300], [-5, 5]), { stiffness: 100, damping: 30 });
 
   const handleMouseMove = (e: React.MouseEvent) => {
     const rect = e.currentTarget.getBoundingClientRect();
@@ -50,228 +46,160 @@ export const HeroSection = () => {
     }
   };
 
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: { 
-      opacity: 1, 
-      transition: { 
-        staggerChildren: 0.1,
-        delayChildren: 0.2
-      } 
-    }
-  };
-
-  const itemVariants = {
-    hidden: { y: 20, opacity: 0 },
-    visible: { y: 0, opacity: 1, transition: { duration: 0.5 } }
-  };
-
   return (
     <section 
-      className="relative min-h-[100vh] flex flex-col items-center justify-center pt-24 pb-20 overflow-hidden"
+      className="relative min-h-[95vh] flex flex-col md:flex-row items-center justify-center pt-32 pb-20 px-4 md:px-16 overflow-hidden bg-brand-bg"
       onMouseMove={handleMouseMove}
     >
+      {/* Left Content column column column */}
       <motion.div 
-        className="max-w-[700px] w-full px-4 text-center z-10"
-        variants={containerVariants}
-        initial="hidden"
-        animate="visible"
+        className="w-full md:w-1/2 flex flex-col items-start z-20 text-left"
+        initial={{ opacity: 0, x: -30 }}
+        animate={{ opacity: 1, x: 0 }}
+        transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
       >
-        {/* Top Badge badge badge */}
-        <motion.div variants={itemVariants} className="inline-flex items-center gap-2 bg-primary/10 border border-primary/20 rounded-full px-5 py-2 mb-8 animate-pulse-slow">
-          <PawPrintSVG size={16} color="#1A3D2B" />
-          <span className="font-dm-sans font-bold text-sm text-primary uppercase tracking-wider">Free for early members · Limited time 🐾</span>
-          <PawPrintSVG size={16} color="#1A3D2B" />
-        </motion.div>
+        <div className="flex items-center gap-2 mb-8 bg-surface-low rounded-full px-4 py-1.5 transition-all text-xs font-bold text-primary tracking-widest uppercase">
+          <PawPrintSVG size={14} color="#1A3D2B" />
+          <span>Limited time: Get 1st month free! 🐾</span>
+        </div>
 
-        {/* Headline Headline Headline */}
-        <motion.h1 variants={itemVariants} className="text-[38px] md:text-[72px] font-playfair font-black text-primary leading-[1.1] mb-6">
-          Your pet deserves{' '}
-          <span className="text-accent relative inline-block">
-            a love life
-            <HeartPawSVG 
-              size={48} 
-              className="absolute -top-6 -right-10 hidden md:block animate-float hover:scale-125 transition-transform" 
-            />
-          </span> too.
-        </motion.h1>
-
-        {/* Sub-headline Sub-headline Sub-headline */}
-        <motion.p variants={itemVariants} className="text-lg md:text-xl font-dm-sans text-brand-muted mb-12 max-w-xl mx-auto leading-relaxed">
-          PawMate connects pet owners for playdates, breeding, and friendships — safely, locally, and joyfully. And right now, it is completely free.
-        </motion.p>
-
-        {/* Pet profiling cards deck deck deck */}
-        <motion.div 
-          className="relative h-[400px] w-full flex justify-center items-center mb-16 px-8"
-          variants={itemVariants}
-        >
-          {/* Card left card left card left */}
-          <motion.div 
-            className="absolute z-10 md:translate-x-[-120px] md:translate-y-[20px] md:rotate-[-8deg] pointer-events-none md:pointer-events-auto"
-            style={{ 
-              rotateX: rotateX, rotateY: rotateY, 
-              translateX: '-100px', translateY: '40px', rotate: '-12deg' 
-            }}
-            whileHover={{ scale: 1.05, zIndex: 30 }}
-          >
-            <PetCard 
-              name="Luna" 
-              breed="Siamese" 
-              age="3 yrs" 
-              intent="Playdate" 
-              owner="Sarah" 
-              distance="1.2" 
-              bg="bg-accent" 
-              icon={<CatSVG size={100} color="white" />} 
-            />
-          </motion.div>
-
-          {/* Card center card center card center */}
-          <motion.div 
-            className="absolute z-20 translate-y-0 rotate-0 scale-110 shadow-2xl"
-            style={{ rotateX: rotateX, rotateY: rotateY }}
-            whileHover={{ scale: 1.05 }}
-          >
-            <PetCard 
-              name="Cooper" 
-              breed="Golden Retriever" 
-              age="2.5 yrs" 
-              intent="Playdate" 
-              owner="James" 
-              distance="2.4" 
-              bg="bg-primary" 
-              icon={<DogSVG size={100} color="white" />} 
-            />
-          </motion.div>
-
-          {/* Card right card right card right */}
-          <motion.div 
-            className="absolute z-10 md:translate-x-[120px] md:translate-y-[20px] md:rotate-[8deg] pointer-events-none md:pointer-events-auto"
-            style={{ 
-              rotateX: rotateX, rotateY: rotateY, 
-              translateX: '100px', translateY: '40px', rotate: '12deg' 
-            }}
-            whileHover={{ scale: 1.05, zIndex: 30 }}
-          >
-            <PetCard 
-              name="Thumper" 
-              breed="English Lop" 
-              age="1 yr" 
-              intent="Breeding" 
-              owner="Mia" 
-              distance="0.8" 
-              bg="bg-primary" 
-              icon={<RabbitSVG size={100} color="white" />} 
-            />
-          </motion.div>
-
-          {/* Decorative decorative decorative decorative */}
-          <PawPrintSVG className="absolute top-10 left-[20%] opacity-20 hidden md:block animate-float" size={40} color="#1A3D2B" />
-          <TailWagSVG className="absolute bottom-10 right-[25%] opacity-20 hidden md:block animate-float" size={50} color="#F5A623" />
-        </motion.div>
-
-        {/* Form Form Form Form */}
-        <motion.div variants={itemVariants} className="max-w-2xl mx-auto w-full px-4" id="join-form">
-          <form 
-            onSubmit={handleSubmit}
-            className="flex flex-col md:flex-row bg-white rounded-3xl md:rounded-full border-2 border-primary overflow-hidden shadow-2xl transition-all focus-within:ring-4 focus-within:ring-primary/10"
-          >
-            <div className="flex-1 flex items-center px-6 py-4">
-              <span className="text-xl mr-3 opacity-50">🐾</span>
-              <input 
-                type="email" 
-                placeholder="Enter your email..." 
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-                className="w-full bg-transparent outline-none font-dm-sans py-1 text-primary placeholder:text-brand-muted"
-              />
-            </div>
-            <button 
-              type="submit" 
-              disabled={loading}
-              className="bg-primary text-white font-dm-sans font-bold px-10 py-5 hover:bg-accent transition-all duration-300 md:rounded-none group disabled:opacity-70"
+        <h1 className="text-[52px] md:text-[100px] font-noto font-black text-primary leading-[0.9] mb-10 tracking-tight">
+          Your pet <br /> deserves a <br />
+          <span className="text-accent italic relative inline-block">
+            love life
+            <motion.div 
+              initial={{ scale: 0, rotate: -30 }}
+              animate={{ scale: 1, rotate: 0 }}
+              transition={{ delay: 1, type: 'spring' }}
+              className="absolute -top-6 -right-12 hidden md:block"
             >
-              {loading ? (
-                <div className="flex items-center gap-2 animate-spin">
-                  <PawPrintSVG size={20} color="white" />
-                </div>
-              ) : (
-                <span className="flex items-center gap-2">Join Free <ArrowRightIcon /></span>
-              )}
-            </button>
-          </form>
-          
-          {/* Trust trust trust row row row */}
-          <div className="mt-4 flex flex-wrap justify-center gap-x-6 gap-y-2 text-xs font-dm-sans text-brand-muted/80">
-            <span className="flex items-center gap-1">🔒 Free forever for early members</span>
-            <span className="flex items-center gap-1">🐾 No spam</span>
-            <span className="flex items-center gap-1">↩ Unsubscribe anytime</span>
-          </div>
+              <HeartPawSVG size={48} color="#E85D4A" />
+            </motion.div>
+          </span> too.
+        </h1>
 
-          {/* Live Counter row row row */}
-          <div className="mt-12 flex flex-col items-center gap-4">
-            <div className="flex -space-x-3">
-              {['D', 'C', 'R', 'B', 'H'].map((initial, i) => (
-                <div 
-                  key={initial} 
-                  className={`w-10 h-10 rounded-full border-2 border-brand-bg flex items-center justify-center text-white font-bold text-sm shadow-sm
-                    ${i % 2 === 0 ? 'bg-primary' : 'bg-accent'}`}
-                >
-                  {initial}
-                </div>
-              ))}
-            </div>
-            <div className="flex items-center gap-3 font-dm-sans text-sm font-semibold text-primary/80">
-              <span>+ {count.toLocaleString()} pet owners on the waitlist</span>
-              <FootprintTrailSVG size={40} color="#F5A623" />
-            </div>
+        <p className="text-lg md:text-xl font-jakarta text-brand-muted mb-12 max-w-lg leading-relaxed font-medium">
+          PawMate connects pet owners for playdates, friendship, and breeding. The premier social club for the furry, feathered, and scaled.
+        </p>
+
+        <form 
+          onSubmit={handleSubmit}
+          className="flex flex-col md:flex-row bg-white rounded-3xl md:rounded-full border-2 border-black/5 p-1 w-full max-w-xl shadow-2xl shadow-primary/5 focus-within:border-primary/20 transition-all"
+        >
+          <input 
+            type="email" 
+            placeholder="Enter your email" 
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+            className="flex-1 bg-transparent px-8 py-4 outline-none font-jakarta text-primary font-semibold"
+          />
+          <button 
+            type="submit" 
+            disabled={loading}
+            className="bg-primary text-[#FAF8F4] font-jakarta font-bold px-10 py-4 rounded-full flex items-center justify-center gap-3 hover:bg-accent transition-all group disabled:opacity-70"
+          >
+            {loading ? '🐾 Connecting...' : (
+              <>Join Free <ArrowRight className="group-hover:translate-x-1" size={20} /></>
+            )}
+          </button>
+        </form>
+
+        <div className="mt-6 flex flex-wrap gap-8 text-[11px] font-bold text-brand-muted/70 uppercase tracking-widest pl-2">
+           <span className="flex items-center gap-2">🛡️ Free forever for early members</span>
+           <span className="flex items-center gap-2">🐾 No spam, just paws</span>
+        </div>
+
+        {/* Live counter bar row row row row row row */}
+        <div className="mt-16 flex items-center gap-4">
+          <div className="flex -space-x-3">
+             {[1,2,3,4,5].map(i => (
+               <div key={i} className={`w-10 h-10 rounded-full border-2 border-brand-bg flex items-center justify-center font-bold text-white text-xs ${i % 2 === 0 ? 'bg-accent' : 'bg-primary'}`}>{['D','C','R','B','H'][i-1]}</div>
+             ))}
           </div>
-        </motion.div>
+          <div className="font-jakarta text-sm font-black text-primary/80">
+            <span className="text-primary">12,482</span> pet owners on waitlist
+          </div>
+        </div>
       </motion.div>
+
+      {/* Right Content asymmetric cards deck deck deck deck */}
+      <div className="w-full md:w-1/2 relative h-[600px] mt-20 md:mt-0 flex items-center justify-center md:items-start md:justify-end">
+        
+        {/* Under-Right Card Rabbit Thumper */}
+        <motion.div 
+          className="absolute z-10 md:top-[250px] md:right-[-50px] translate-x-10 rotate-[12deg] md:rotate-[15deg]"
+          style={{ rotateX, rotateY }}
+          initial={{ opacity: 0, scale: 0.8, x: 100 }}
+          animate={{ opacity: 1, scale: 1, x: 0 }}
+          transition={{ delay: 0.8, duration: 1 }}
+        >
+          <PetCard 
+            name="Thumper" 
+            breed="English Lop" 
+            status="PLAYDATE" 
+            bg="bg-primary" 
+            icon={<RabbitSVG size={140} color="white" />} 
+          />
+        </motion.div>
+
+        {/* Under-Left Card Cat Luna */}
+        <motion.div 
+          className="absolute z-15 md:top-[120px] md:right-[150px] translate-x-[-20px] rotate-[-8deg] md:rotate-[-10deg]"
+          style={{ rotateX, rotateY }}
+          initial={{ opacity: 0, scale: 0.8, x: -100 }}
+          animate={{ opacity: 1, scale: 1, x: 0 }}
+          transition={{ delay: 0.6, duration: 1 }}
+        >
+          <PetCard 
+            name="Luna" 
+            breed="Persian Cat" 
+            status="BREEDING" 
+            bg="bg-accent" 
+            icon={<CatSVG size={150} color="white" />} 
+          />
+        </motion.div>
+
+        {/* Top-Center Card Dog Cooper */}
+        <motion.div 
+          className="absolute z-30 md:top-[0px] md:right-[0px] rotate-[3deg] shadow-2xl scale-110"
+          style={{ rotateX, rotateY }}
+          initial={{ opacity: 0, y: 100, scale: 1.2 }}
+          animate={{ opacity: 1, y: 0, scale: 1.1 }}
+          transition={{ delay: 0.4, duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
+        >
+          <PetCard 
+            name="Cooper" 
+            breed="Golden Retriever · 2y" 
+            status="PLAYDATE" 
+            bg="bg-primary/90" 
+            icon={<DogSVG size={160} color="white" />} 
+            featured 
+          />
+        </motion.div>
+
+        {/* Scattered Background elements scattered scattered */}
+        <div className="absolute top-0 right-0 w-full h-full opacity-[0.03] pointer-events-none select-none">
+          <PawPrintSVG size={600} color="#1A3D2B" className="rotate-45" />
+        </div>
+      </div>
     </section>
   );
 };
 
-const PetCard = ({ name, breed, age, intent, owner, distance, bg, icon }: any) => (
-  <div className="w-[220px] h-[300px] bg-white rounded-[25px] overflow-hidden shadow-[0_8px_32px_rgba(0,0,0,0.08)] flex flex-col group transition-transform duration-500">
-    {/* top head header header */}
-    <div className={`relative h-[55%] ${bg} flex items-center justify-center p-6 transition-colors duration-500`}>
-      <CollarSVG size={24} className="absolute top-4 right-4 text-white/40" />
-      <div className="absolute top-4 left-4 bg-white/20 backdrop-blur-md px-3 py-1 rounded-full text-[10px] font-bold text-white uppercase tracking-wider flex items-center gap-1">
-        🐾 {intent}
+const PetCard = ({ name, breed, status, bg, icon, featured }: any) => (
+  <div className={`w-[240px] md:w-[280px] bg-white rounded-[48px] overflow-hidden tonal-shadow border border-black/5 flex flex-col group p-4 gap-4 transition-transform ${featured ? 'md:w-[320px]' : ''}`}>
+    <div className={`aspect-square rounded-[36px] ${bg} flex items-center justify-center p-8 transition-all group-hover:scale-105 duration-500 relative`}>
+      <div className="absolute top-4 right-4 bg-accent text-primary px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest transform rotate-[-3deg] shadow-lg">
+        {status}
       </div>
-      <div className="transform group-hover:scale-110 transition-transform duration-500">
+      <div className="filter drop-shadow-2xl">
         {icon}
       </div>
     </div>
-    {/* bottom body body body */}
-    <div className="p-5 flex flex-col flex-1 bg-white">
-      <div className="flex items-center justify-between mb-1">
-        <h3 className="font-playfair font-bold text-xl text-primary">{name}</h3>
-        <PawPrintSVG size={14} color="#1A3D2B" className="opacity-50" />
-      </div>
-      <p className="text-xs font-dm-sans text-brand-muted/80 font-medium">{breed} · {age}</p>
-      
-      <div className="mt-auto flex items-center justify-between border-t border-black/5 pt-3">
-        <div className="flex items-center gap-2">
-          <div className={`w-6 h-6 rounded-full ${bg} grow flex items-center justify-center text-[10px] text-white font-bold`}>
-            {owner[0]}
-          </div>
-          <span className="text-[10px] font-bold text-brand-text">{owner} · {distance}km</span>
-        </div>
-        <div className="w-4 h-4 rounded-full bg-accent/20 flex items-center justify-center">
-          <PawPrintSVG size={8} color="#F5A623" />
-        </div>
-      </div>
+    <div className="px-2 pb-2">
+      <h3 className="font-noto font-black text-2xl text-primary leading-tight mb-1">{name}</h3>
+      <p className="font-jakarta text-xs font-bold text-brand-muted/70 uppercase tracking-widest">{breed}</p>
     </div>
   </div>
-);
-
-const ArrowRightIcon = () => (
-  <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg" className="group-hover:translate-x-1 transition-transform">
-    <path d="M10.875 3.375L16.5 9L10.875 14.625" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-    <path d="M1.5 9H16.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-  </svg>
 );

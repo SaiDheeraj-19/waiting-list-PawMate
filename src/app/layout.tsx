@@ -1,28 +1,27 @@
 import type { Metadata } from "next";
-import { Playfair_Display, DM_Sans, Geist } from "next/font/google";
+import { Noto_Serif, Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
 import { FreeOfferBanner } from "@/components/layout/FreeOfferBanner";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { BackgroundPattern } from "@/components/layout/BackgroundPattern";
-import { cn } from "@/lib/utils";
 
-const geist = Geist({subsets:['latin'],variable:'--font-sans'});
-
-const playfair = Playfair_Display({
+const notoSerif = Noto_Serif({
   subsets: ["latin"],
-  variable: "--font-playfair",
+  variable: "--font-noto-serif",
+  weight: ["400", "700", "900"],
 });
 
-const dmSans = DM_Sans({
+const plusJakarta = Plus_Jakarta_Sans({
   subsets: ["latin"],
-  variable: "--font-dm-sans",
+  variable: "--font-plus-jakarta",
+  weight: ["400", "500", "600", "700", "800"],
 });
 
 export const metadata: Metadata = {
-  title: "PawMate · Find the perfect match for your pet",
+  title: "PawMate · Digital Curator for Pets",
   description:
-    "Join the waitlist for PawMate, the first social matchmaking app built for pet playdates, breeding, and local animal friendships.",
+    "Join the waitlist for PawMate, the premier social club for the furry, feathered, and scaled.",
   keywords: "pet matchmaking, dog playdates, pet breeding, animal community",
 };
 
@@ -32,8 +31,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={cn(playfair.variable, dmSans.variable, "font-sans", geist.variable)}>
-      <body className="antialiased min-h-screen">
+    <html lang="en" className={`${notoSerif.variable} ${plusJakarta.variable}`}>
+      <body className="antialiased min-h-screen font-plus-jakarta bg-[#faf8f4] text-[#1c1c1e]">
         <BackgroundPattern />
         <FreeOfferBanner />
         <Navbar />

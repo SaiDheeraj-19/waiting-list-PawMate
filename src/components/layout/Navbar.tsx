@@ -2,115 +2,85 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { Menu, X, ArrowRight } from 'lucide-react';
-import { PawPrintSVG } from '../svg/PawPrintSVG';
+import { Menu, X } from 'lucide-react';
 import { LogoSVG } from '../svg/LogoSVG';
-import { DogSVG } from '../svg/DogSVG';
-import { CatSVG } from '../svg/CatSVG';
-import { RabbitSVG } from '../svg/RabbitSVG';
-import { BirdSVG } from '../svg/BirdSVG';
+
+const links = [
+  { name: 'How it works', href: '#how-it-works' },
+  { name: 'Free offer', href: '#free-offer' },
+  { name: 'Pets', href: '#pet-types' },
+  { name: 'FAQ', href: '#faq' },
+];
 
 export const Navbar = () => {
-  const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 20);
-    };
-
+    const handleScroll = () => setScrolled(window.scrollY > 100);
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const navLinks = [
-    { title: 'How it works', href: '#how-it-works', icon: <DogSVG size={20} /> },
-    { title: 'Free offer', href: '#free-offer', icon: <CatSVG size={20} /> },
-    { title: 'Pets', href: '#pets', icon: <RabbitSVG size={20} /> },
-    { title: 'FAQ', href: '#faq', icon: <BirdSVG size={20} /> },
-  ];
-
   return (
-    <nav 
-      className={`sticky top-0 z-40 w-full bg-brand-bg transition-shadow duration-300 ${
-        scrolled ? 'shadow-sm border-b border-primary/5' : ''
-      }`}
-    >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-16 md:h-20">
-          {/* Logo */}
-          <Link href="/" className="flex items-center gap-2">
-            <LogoSVG size={160} />
-          </Link>
+    <nav className={`fixed left-0 w-full z-50 transition-all duration-500 top-[40px] md:top-[44px] ${scrolled ? 'py-4 glass border-b border-black/5' : 'py-8 md:py-12 bg-transparent'}`}>
+      <div className="max-w-7xl mx-auto px-6 md:px-12 flex items-center justify-between">
+        {/* Logo left column row */}
+        <Link href="/" className="flex items-center group transition-transform hover:scale-105 active:scale-95">
+          <LogoSVG size={180} />
+        </Link>
 
-          {/* Desktop Links */}
-          <div className="hidden md:flex items-center gap-8">
-            {navLinks.map((link) => (
-              <Link 
-                key={link.title} 
-                href={link.href}
-                className="font-dm-sans text-brand-text hover:text-primary transition-colors text-sm font-medium"
-              >
-                {link.title}
-              </Link>
-            ))}
-          </div>
-
-          {/* desktop Button */}
-          <div className="hidden md:block">
+        {/* Desktop Links centered row row */}
+        <div className="hidden md:flex items-center gap-12 absolute left-1/2 -translate-x-1/2">
+          {links.map(link => (
             <Link 
-              href="#join-form"
-              className="bg-primary text-white font-dm-sans font-semibold py-3 px-6 rounded-full flex items-center gap-2 hover:bg-accent transition-all duration-300 group shadow-lg shadow-primary/10"
+              key={link.name} 
+              href={link.href} 
+              className="text-xs font-jakarta font-black uppercase tracking-[0.2em] text-primary hover:text-accent transition-all duration-300 relative group"
             >
-              <span>🐾 Join Free</span>
-              <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
+              {link.name}
+              <span className="absolute -bottom-2 left-0 w-0 h-[2px] bg-accent transition-all group-hover:w-full"></span>
             </Link>
-          </div>
-
-          {/* Mobile Toggle */}
-          <div className="md:hidden flex items-center">
-            <button 
-              onClick={() => setIsOpen(!isOpen)}
-              className="text-primary hover:bg-black/5 p-2 rounded-lg transition-colors"
-            >
-              {isOpen ? <X size={28} /> : <Menu size={28} />}
-            </button>
-          </div>
+          ))}
         </div>
+
+        {/* Desktop CTA right column row */}
+        <Link 
+          href="#join-form" 
+          className="hidden md:flex items-center gap-3 bg-primary text-[#FAF8F4] px-8 py-3.5 rounded-full font-jakarta font-black text-xs uppercase tracking-widest shadow-xl shadow-primary/10 hover:bg-accent transition-all duration-300 active:scale-95"
+        >
+          <span>Join Free 🐾</span>
+        </Link>
+
+        {/* Mobile Hamburger menu row row */}
+        <button 
+          onClick={() => setIsOpen(!isOpen)}
+          className="md:hidden p-2 text-primary hover:bg-black/5 rounded-full"
+        >
+          {isOpen ? <X size={24} /> : <Menu size={24} />}
+        </button>
       </div>
 
-      {/* Mobile Menu */}
+      {/* Mobile Drawer row row row row row row */}
       {isOpen && (
-        <div className="md:hidden fixed inset-0 z-50 bg-brand-bg flex flex-col pt-24 px-6 animate-in slide-in-from-right duration-300">
-          <button 
-            onClick={() => setIsOpen(false)}
-            className="absolute top-4 right-4 text-primary p-2 rounded-lg"
-          >
-            <X size={32} />
-          </button>
-          
-          <div className="flex flex-col gap-6">
-            {navLinks.map((link) => (
-              <Link 
-                key={link.title} 
-                href={link.href}
-                onClick={() => setIsOpen(false)}
-                className="flex items-center gap-4 text-3xl font-playfair font-bold text-primary hover:text-accent transition-colors"
-              >
-                <div className="p-2 bg-primary/5 rounded-2xl">{link.icon}</div>
-                {link.title}
-              </Link>
-            ))}
-            
-            <Link 
-              href="#join-form" 
+        <div className="md:hidden glass h-screen w-full absolute top-0 left-0 flex flex-col items-center justify-center gap-8 py-20 animate-fade-in px-8">
+           {links.map(link => (
+            <a 
+              key={link.name} 
+              href={link.href} 
               onClick={() => setIsOpen(false)}
-              className="mt-8 bg-primary text-white w-full py-5 rounded-3xl flex items-center justify-center gap-3 text-xl font-dm-sans font-bold shadow-xl shadow-primary/20 transition-all hover:bg-accent"
+              className="text-2xl font-noto font-black text-primary hover:text-accent"
             >
-              <span>🐾 Join Free</span>
-              <ArrowRight size={24} />
-            </Link>
-          </div>
+              {link.name}
+            </a>
+          ))}
+          <Link 
+            href="#join-form" 
+            onClick={() => setIsOpen(false)}
+            className="w-full bg-primary text-white py-6 rounded-full font-jakarta font-black text-center shadow-lg"
+          >
+            JOIN FREE 🐾
+          </Link>
         </div>
       )}
     </nav>

@@ -1,12 +1,9 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
-import { motion, useInView, useSpring, useTransform } from 'framer-motion';
-import { DoublePawSVG } from '../svg/DoublePawSVG';
-import { DogSVG } from '../svg/DogSVG';
-import { TailWagSVG } from '../svg/TailWagSVG';
-import { FootprintTrailSVG } from '../svg/FootprintTrailSVG';
-import { MapPin } from 'lucide-react';
+import React from 'react';
+import { motion, useInView } from 'framer-motion';
+import { PawPrintSVG } from '../svg/PawPrintSVG';
+import { MapPin, Star } from 'lucide-react';
 
 interface StatsProps {
   initialStats?: {
@@ -17,69 +14,57 @@ interface StatsProps {
 }
 
 export const StatsSection = ({ initialStats }: StatsProps) => {
-  const [stats, setStats] = useState(initialStats || { total: 0, cities: 0, top_pet: 'dog' });
+  const ref = React.useRef(null);
+  const isInView = useInView(ref, { once: true });
+
+  const stats = initialStats || { total: 42000, cities: 156, top_pet: 'Golden Retriever' };
 
   return (
-    <section className="bg-brand-bg py-24 relative">
-      <div className="absolute top-0 left-0 w-full rotate-180 opacity-20 overflow-hidden">
-        <FootprintTrailSVG color="#1A3D2B" size={400} className="w-full h-20" />
-      </div>
+    <section ref={ref} className="bg-brand-bg py-40 md:py-64 px-4 overflow-hidden relative">
+      <div className="max-w-7xl mx-auto flex flex-col md:flex-row gap-8 items-center justify-center relative z-10">
+        
+        {/* Total Profiles Profile Profile Profile Card */}
+        <motion.div 
+          className="w-full md:w-[400px] h-[320px] bg-primary rounded-[4rem] md:rounded-[5rem] flex flex-col items-center justify-center text-white/90 relative p-12 overflow-hidden shadow-2xl shadow-primary/10 transition-transform hover:scale-105"
+          initial={{ opacity: 0, y: 30 }}
+          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.8, delay: 0.2 }}
+        >
+          <div className="absolute top-10 flex items-center justify-center opacity-20"><PawPrintSVG size={32} color="currentColor" /></div>
+          <div className="text-5xl md:text-[80px] font-noto font-black text-white leading-none mb-4 tabular-nums">
+            {stats.total.toLocaleString()}+
+          </div>
+          <p className="text-[11px] md:text-sm font-jakarta font-black uppercase tracking-[0.2em] opacity-40">Profiles Ready</p>
+        </motion.div>
 
-      <div className="max-w-7xl mx-auto px-4 md:px-8 grid grid-cols-1 md:grid-cols-5 items-center gap-12">
-        <StatItem 
-          count={stats.total} 
-          label="Pet owners waiting" 
-          icon={<DoublePawSVG size={40} color="#F5A623" />} 
-        />
-        
-        <TailWagSVG className="hidden md:block mx-auto opacity-10 rotate-90" size={40} color="#1A3D2B" />
-        
-        <StatItem 
-          count={stats.cities} 
-          label="Cities represented" 
-          icon={<MapPin size={40} className="text-accent" />} 
-        />
-        
-        <TailWagSVG className="hidden md:block mx-auto opacity-10 rotate-90" size={40} color="#1A3D2B" />
-        
-        <div className="flex flex-col items-center gap-4 text-center">
-          <div className="p-4 bg-primary/5 rounded-3xl animate-float">
-            <DogSVG size={64} className="text-primary hover:rotate-12 transition-transform" />
+        {/* Cities Card Cities Cities Card Card */}
+        <motion.div 
+          className="w-full md:w-[400px] h-[320px] bg-surface-low rounded-[4rem] md:rounded-[5rem] flex flex-col items-center justify-center text-primary relative p-12 shadow-[0_32px_64px_rgba(0,0,0,0.03)] transition-transform hover:scale-105"
+          initial={{ opacity: 0, y: 30 }}
+          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration:0.8, delay: 0.4 }}
+        >
+          <div className="absolute top-10 flex items-center justify-center opacity-20"><MapPin size={32} color="currentColor" /></div>
+          <div className="text-5xl md:text-[80px] font-noto font-black text-primary leading-none mb-4 tabular-nums">
+            {stats.cities}+
           </div>
-          <div>
-            <span className="font-playfair text-2xl md:text-3xl font-bold text-primary capitalize leading-tight">
-              {stats.top_pet}s
-            </span>
-            <p className="mt-2 font-dm-sans font-bold text-[10px] md:text-xs uppercase tracking-widest text-brand-muted">Most popular pet</p>
+          <p className="text-[11px] md:text-sm font-jakarta font-black uppercase tracking-[0.2em] opacity-40">Cities Live</p>
+        </motion.div>
+
+        {/* Top Breed Card Top Breed Top Breed Card */}
+        <motion.div 
+          className="w-full md:w-[400px] h-[320px] bg-accent rounded-[4rem] md:rounded-[5rem] flex flex-col items-center justify-center text-primary relative p-12 shadow-2xl shadow-accent/10 transition-transform hover:scale-105"
+          initial={{ opacity: 0, y: 30 }}
+          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration:0.8, delay: 0.6 }}
+        >
+          <div className="absolute top-10 flex items-center justify-center opacity-20"><Star size={32} color="currentColor" /></div>
+          <div className="text-3xl md:text-[52px] font-noto font-black text-primary leading-tight mb-4 text-center">
+            {stats.top_pet}
           </div>
-        </div>
+          <p className="text-[11px] md:text-sm font-jakarta font-black uppercase tracking-[0.2em] opacity-40">Top Breed This Week</p>
+        </motion.div>
       </div>
     </section>
-  );
-};
-
-const StatItem = ({ count, label, icon }: { count: number; label: string; icon: React.ReactNode }) => {
-  const ref = React.useRef(null);
-  const isInView = useInView(ref, { once: true, margin: "-100px" });
-  
-  const spring = useSpring(0, { stiffness: 50, damping: 20 });
-  const display = useTransform(spring, (val) => Math.floor(val).toLocaleString());
-
-  useEffect(() => {
-    if (isInView) spring.set(count);
-  }, [isInView, count, spring]);
-
-  return (
-    <div ref={ref} className="flex flex-col items-center gap-4 text-center">
-      <div className="p-4 bg-accent/10 rounded-3xl group px-8">
-        {icon}
-      </div>
-      <div>
-        <motion.span className="font-playfair text-5xl md:text-6xl font-black text-primary leading-none">
-          {display}
-        </motion.span>
-        <p className="mt-3 font-dm-sans font-bold text-xs uppercase tracking-widest text-brand-muted">{label}</p>
-      </div>
-    </div>
   );
 };
