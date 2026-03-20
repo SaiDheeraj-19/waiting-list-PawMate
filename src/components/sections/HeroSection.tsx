@@ -37,8 +37,8 @@ export const HeroSection = ({ totalWaitlistCount = 0 }: { totalWaitlistCount?: n
       {/* FULL-BLEED IMAGE — top right organic shape */}
       <div className="absolute top-0 right-0 w-[52%] h-full hidden md:block">
         <Image
-          src="/hero_pets.jpg"
-          alt="Golden retriever and Persian cat sitting together"
+          src="/pawmate_bg.png"
+          alt="PawMate Background"
           fill
           className="object-cover object-center"
           priority
@@ -52,7 +52,7 @@ export const HeroSection = ({ totalWaitlistCount = 0 }: { totalWaitlistCount?: n
 
       {/* Mobile full-bleed */}
       <div className="relative w-full h-[55vw] md:hidden">
-        <Image src="/hero_pets.jpg" alt="Pets" fill className="object-cover object-center" priority sizes="100vw"/>
+        <Image src="/pawmate_bg.png" alt="Pets" fill className="object-cover object-center" priority sizes="100vw"/>
         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-[#F9F7F3]" />
       </div>
 
