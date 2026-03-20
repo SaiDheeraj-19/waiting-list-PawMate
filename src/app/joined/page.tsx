@@ -14,7 +14,7 @@ import { RabbitSVG } from '@/components/svg/RabbitSVG';
 import { BirdSVG } from '@/components/svg/BirdSVG';
 import { CollarSVG } from '@/components/svg/CollarSVG';
 import { Copy, Share2, CheckCircle2 } from 'lucide-react';
-import { getReferralCount, updatePetPreferences, getWaitlistEntryByEmail } from '@/app/actions/waitlist';
+import { getReferralCount, updatePetPreferences, getWaitlistEntryByEmail, updateUserCity } from '@/app/actions/waitlist';
 import { getCurrentUserSession } from '@/app/actions/auth';
 
 export default function JoinedPage() {
@@ -36,6 +36,8 @@ function JoinedContent() {
   const [petType, setPetType] = useState<string | null>(null);
   const [intent, setIntent] = useState<string | null>(null);
   const [email, setEmail] = useState<string | null>(null);
+  const [userCity, setUserCity] = useState<string>('');
+  const [isCityMissing, setIsCityMissing] = useState(false);
   const [saved, setSaved] = useState(false);
 
   const referralLink = `${process.env.NEXT_PUBLIC_APP_URL || 'https://waitlist.pawmate.app'}/refer/${referralCode}`;
@@ -81,7 +83,13 @@ function JoinedContent() {
           if (position === '1') setPosition(entry.position);
           if (entry.pet_type) setPetType(entry.pet_type);
           if (entry.intent) setIntent(entry.intent);
-          if (entry.pet_type && entry.intent) setSaved(true);
+          if (entry.city) {
+            setUserCity(entry.city);
+            setIsCityMissing(false);
+          } else {
+            setIsCityMissing(true);
+          }
+          if (entry.pet_type && entry.intent && entry.city) setSaved(true);
         }
       }
     };
@@ -95,8 +103,11 @@ function JoinedContent() {
   };
 
   const handleSavePreferences = async () => {
-    if (!petType || !intent || !email) return;
+    if (!petType || !intent || !email || (isCityMissing && !userCity)) return;
     try {
+      if (isCityMissing && userCity) {
+        await updateUserCity(email, userCity);
+      }
       await updatePetPreferences(email, petType, intent);
       setSaved(true);
     } catch (err) {
@@ -199,6 +210,26 @@ function JoinedContent() {
               <p className="text-lg text-brand-muted max-w-xl mx-auto mb-12">Help us customize your future PawMate experience</p>
 
               <div className="w-full flex flex-col gap-12">
+                {/* City capture if missing */}
+                {isCityMissing && (
+                  <motion.div 
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    className="w-full max-w-md mx-auto"
+                  >
+                    <h3 className="text-xs font-dm-sans font-black text-brand-muted uppercase tracking-[0.2em] mb-4 text-center">
+                      📍 Where are you located?
+                    </h3>
+                    <input 
+                      type="text"
+                      placeholder="Enter your city"
+                      value={userCity}
+                      onChange={(e) => setUserCity(e.target.value)}
+                      className="w-full bg-brand-bg border-2 border-primary/5 rounded-3xl px-8 py-5 font-dm-sans font-bold text-primary outline-none focus:border-accent/30 transition-all text-center"
+                    />
+                  </motion.div>
+                )}
+
                 {/* Species row row row row row row row */}
                 <div>
                   <h3 className="text-xs font-dm-sans font-black text-brand-muted uppercase tracking-[0.2em] mb-6 flex items-center justify-center gap-2">
@@ -249,10 +280,10 @@ function JoinedContent() {
 
                 <button 
                   onClick={handleSavePreferences}
-                  disabled={!petType || !intent}
+                  disabled={!petType || !intent || (isCityMissing && !userCity)}
                   className="bg-primary text-white font-dm-sans font-bold py-5 px-12 rounded-full shadow-2xl shadow-primary/20 mx-auto hover:bg-accent hover:-translate-y-1 transition-all disabled:opacity-30 disabled:pointer-events-none"
                 >
-                  Save Pet Preferences 🐾
+                  Save Everything 🐾
                 </button>
               </div>
             </div>

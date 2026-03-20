@@ -229,3 +229,11 @@ export async function getWaitlistEntryByEmail(email: string) {
   if (!entry) return null;
   return entry;
 }
+
+export async function updateUserCity(email: string, city: string) {
+  await db
+    .update(waitlist)
+    .set({ city })
+    .where(eq(waitlist.email, email));
+  return { success: true };
+}

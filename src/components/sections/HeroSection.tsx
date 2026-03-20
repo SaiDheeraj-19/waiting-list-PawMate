@@ -145,11 +145,7 @@ export const HeroSection = ({ totalWaitlistCount = 0 }: { totalWaitlistCount?: n
 
           {/* Google Button */}
           <form action={async () => {
-            if (!city) {
-              alert("Wait! Please type your City first — so we know where PawMate is needed! 🐾");
-              return;
-            }
-            document.cookie = `waitlist_city=${encodeURIComponent(city)}; path=/; max-age=3600`;
+            if (city) document.cookie = `waitlist_city=${encodeURIComponent(city)}; path=/; max-age=3600`;
             await signInWithGoogle();
           }}>
             <button
