@@ -15,7 +15,7 @@ export const FootprintTrailSVG: React.FC<SVGProps> = ({
   <svg 
     viewBox="0 0 200 100" 
     width={size} 
-    height={size / 2} 
+    height={(Number(size) / 2) || 50}  
     className={className}
     {...props}
   >
