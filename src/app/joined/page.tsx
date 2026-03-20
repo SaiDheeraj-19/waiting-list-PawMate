@@ -27,6 +27,7 @@ export default function JoinedPage() {
 function JoinedContent() {
   const searchParams = useSearchParams();
   const code = searchParams.get('code') || '';
+  const pos = searchParams.get('pos') || '1';
   const [copied, setCopied] = useState(false);
   const [referrals, setReferrals] = useState(0);
   const [petType, setPetType] = useState<string | null>(null);
@@ -128,7 +129,7 @@ function JoinedContent() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.5, type: 'spring' }}
               >
-                1,284
+                {Number(pos).toLocaleString()}
               </motion.span>
             </div>
             <p className="text-sm font-bold text-primary/60 bg-primary/5 px-4 py-2 rounded-full mb-8">You are in the top 5% of early members 🐾</p>
@@ -309,7 +310,7 @@ function JoinedContent() {
               active={referrals >= 10} 
               needed={10} 
               current={referrals} 
-              reward="Lifetime free premium" 
+              reward="2 years free premium" 
               icon={<HeartPawSVG size={24} />} 
               color="bg-accent"
             />
