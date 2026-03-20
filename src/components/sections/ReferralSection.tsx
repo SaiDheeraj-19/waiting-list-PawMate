@@ -1,80 +1,104 @@
 'use client';
 
 import React from 'react';
+import Image from 'next/image';
 import { motion } from 'framer-motion';
-import { Rocket, Trophy, Crown, Gift } from 'lucide-react';
+import { ArrowUpRight } from 'lucide-react';
 
 const tiers = [
   {
-    icon: <Trophy className="text-accent" size={40} />,
-    title: "1 FRIEND",
-    reward: "Silver Badge",
-    description: "Profile priority in search",
-    color: "bg-surface-low/50"
+    label: '1 referral',
+    title: 'Silver Badge',
+    perk: 'Priority in search results',
   },
   {
-    icon: <Crown className="text-accent" size={48} />,
-    title: "5 FRIENDS",
-    reward: "Gold Access",
-    description: "Early Alpha Access + No Ads",
-    color: "bg-accent/5",
-    featured: true
+    label: '5 referrals',
+    title: 'Gold Access',
+    perk: 'Early alpha access — no ads, ever',
+    featured: true,
   },
   {
-    icon: <Gift className="text-accent" size={40} />,
-    title: "10 FRIENDS",
-    reward: "Founding Member",
-    description: "Lifetime Premium Free",
-    color: "bg-surface-low/50"
-  }
+    label: '10 referrals',
+    title: 'Founding Member',
+    perk: 'Lifetime Premium — absolutely free',
+  },
 ];
 
 export const ReferralSection = () => {
   return (
-    <section id="referral" className="bg-brand-bg py-40 md:py-64 px-4 overflow-hidden relative">
-      <div className="max-w-7xl mx-auto flex flex-col items-center z-10 relative">
+    <section id="referral" className="bg-[#F9F7F3] py-40 md:py-56 px-6 md:px-12 overflow-hidden">
+      <div className="max-w-7xl mx-auto">
         
-        <div className="bg-white rounded-[4rem] md:rounded-[6rem] p-12 md:p-32 w-full max-w-6xl flex flex-col items-center text-center shadow-[0_64px_128px_-24px_rgba(2,39,23,0.06)] relative overflow-hidden">
+        {/* Two-column layout */}
+        <div className="flex flex-col md:flex-row gap-12 md:gap-20">
           
-          <div className="absolute top-0 left-0 w-full h-full opacity-[0.03] pointer-events-none">
-             <Rocket size={800} className="rotate-45" />
-          </div>
-
-          <motion.div 
-            className="mb-24 z-10"
-            initial={{ opacity: 0, scale: 0.9 }}
-            whileInView={{ opacity: 1, scale: 1 }}
+          {/* Left — image + tag */}
+          <motion.div
+            className="w-full md:w-[45%] relative rounded-[40px] overflow-hidden aspect-[4/5] flex-shrink-0"
+            initial={{ opacity: 0, x: -30 }}
+            whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
+            transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
           >
-            <h2 className="text-5xl md:text-[90px] font-noto font-black text-primary tracking-tight leading-tight mb-8">
-               Move up the waitlist 🚀
-            </h2>
-            <p className="text-lg md:text-xl font-jakarta font-medium text-brand-muted max-w-xl mx-auto">
-               Refer friends and climb the ranks to get early access before everyone else.
-            </p>
+            <Image src="/pets_playing.jpg" alt="Dogs playing together" fill className="object-cover" sizes="45vw" />
+            <div className="absolute inset-0 bg-gradient-to-t from-[#1A3D2B]/60 via-transparent to-transparent" />
+            <div className="absolute bottom-8 left-8 right-8">
+              <p className="font-noto font-black text-white text-3xl leading-tight">
+                Bring a friend.<br />Move up the list.
+              </p>
+            </div>
           </motion.div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full z-10">
-            {tiers.map((tier, i) => (
-              <motion.div 
-                key={i}
-                className={`rounded-[4rem] p-12 flex flex-col items-center justify-center transition-all duration-300 ${tier.color} ${tier.featured ? 'scale-110 shadow-xl shadow-accent/5' : ''}`}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.1, duration: 1 }}
-              >
-                <div className="mb-10 p-6 bg-white rounded-full shadow-lg">
-                  {tier.icon}
+          {/* Right — content */}
+          <motion.div
+            className="w-full md:flex-1 flex flex-col justify-center"
+            initial={{ opacity: 0, x: 30 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 1, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
+          >
+            <div className="flex items-center gap-3 mb-8">
+              <div className="w-1.5 h-1.5 rounded-full bg-[#C8922A]" />
+              <p className="font-jakarta text-[10px] font-black uppercase tracking-[0.25em] text-[#1A1A1A]/35">Referral rewards</p>
+            </div>
+
+            <h2 className="font-noto font-black text-[#1A3D2B] text-[44px] md:text-[64px] leading-[0.95] tracking-[-0.03em] mb-8">
+              Move up<br />the waitlist.
+            </h2>
+
+            <p className="font-jakarta font-medium text-[#1A1A1A]/45 text-base leading-[1.7] max-w-sm mb-14">
+              Refer friends and earn exclusive rewards. The more friends you bring, the earlier you get access and the more perks you unlock.
+            </p>
+
+            {/* Tier cards */}
+            <div className="flex flex-col gap-4">
+              {tiers.map((tier, i) => (
+                <div
+                  key={i}
+                  className={`rounded-[24px] p-6 flex items-center justify-between gap-6 transition-colors ${
+                    tier.featured 
+                      ? 'bg-[#1A3D2B] text-white' 
+                      : 'bg-[#F3F1EC] text-[#1A3D2B]'
+                  }`}
+                >
+                  <div>
+                    <p className={`font-jakarta text-[9px] font-black uppercase tracking-[0.2em] mb-1 ${tier.featured ? 'text-white/40' : 'text-[#1A1A1A]/30'}`}>
+                      {tier.label}
+                    </p>
+                    <p className={`font-noto font-black text-xl tracking-tight ${tier.featured ? 'text-white' : 'text-[#1A3D2B]'}`}>
+                      {tier.title}
+                    </p>
+                    <p className={`font-jakarta text-xs font-medium mt-1 ${tier.featured ? 'text-white/50' : 'text-[#1A1A1A]/40'}`}>
+                      {tier.perk}
+                    </p>
+                  </div>
+                  <div className={`w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 ${tier.featured ? 'bg-[#C8922A]' : 'bg-[#1A3D2B]/8'}`}>
+                    <ArrowUpRight size={18} className={tier.featured ? 'text-white' : 'text-[#1A3D2B]'} />
+                  </div>
                 </div>
-                <div className="text-[10px] font-jakarta font-black text-brand-muted/50 uppercase tracking-[0.2em] mb-4">
-                  REFERRED {tier.title}
-                </div>
-                <h3 className="text-3xl font-noto font-black text-primary leading-tight mb-2 tracking-tight">{tier.reward}</h3>
-                <p className="font-jakarta text-xs font-semibold text-brand-muted max-w-[140px] leading-relaxed mx-auto italic">{tier.description}</p>
-              </motion.div>
-            ))}
-          </div>
+              ))}
+            </div>
+          </motion.div>
         </div>
       </div>
     </section>

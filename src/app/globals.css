@@ -4,43 +4,53 @@
   --font-noto-serif: var(--font-noto-serif);
   --font-plus-jakarta: var(--font-plus-jakarta);
 
-  /* Forrest & Amber Palette */
   --color-primary: #1A3D2B;
-  --color-accent: #F5A623;
-  --color-tertiary: #E85D4A;
-  
-  /* Tonal Surfaces */
-  --color-brand-bg: #FAF8F4;
-  --color-surface-low: #f5f3ef;
-  --color-surface-lowest: #ffffff;
-  
-  --color-brand-text: #1C1C1E;
-  --color-brand-muted: #6B7280;
-
-  --animate-float: float 6s ease-in-out infinite;
-  --animate-pulse-slow: pulse-slow 4s ease-in-out infinite;
-  --animate-drift: drift 40s linear infinite;
+  --color-primary-dark: #0e2318;
+  --color-accent: #C8922A;
+  --color-accent-light: #F5A623;
+  --color-brand-bg: #F9F7F3;
+  --color-surface: #FFFFFF;
+  --color-surface-low: #F3F1EC;
+  --color-brand-text: #1A1A1A;
+  --color-brand-muted: #6B6B6B;
+  --color-brand-subtle: #A8A8A8;
 
   @keyframes float {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-20px); }
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-16px); }
   }
 
-  @keyframes pulse-slow {
-    0%, 100% { opacity: 1; transform: scale(1); }
-    50% { opacity: 0.8; transform: scale(1.05); }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(32px); }
+    to { opacity: 1; transform: translateY(0); }
   }
 
-  @keyframes drift {
-    from { transform: translate(0, 0); }
-    to { transform: translate(-100px, -100px); }
+  @keyframes scaleIn {
+    from { opacity: 0; transform: scale(0.92); }
+    to { opacity: 1; transform: scale(1); }
   }
 }
 
 @layer base {
+  *, *::before, *::after {
+    box-sizing: border-box;
+  }
+  
+  html {
+    scroll-behavior: smooth;
+  }
+
   body {
     background-color: var(--color-brand-bg);
     color: var(--color-brand-text);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    font-family: var(--font-plus-jakarta), system-ui, sans-serif;
+  }
+
+  ::selection {
+    background-color: var(--color-accent);
+    color: white;
   }
 }
 
@@ -51,46 +61,41 @@
   .font-jakarta {
     font-family: var(--font-plus-jakarta);
   }
-  
-  /* Glassmorphism Rule */
-  .glass {
-    background-color: rgba(250, 248, 244, 0.7);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
+
+  /* True glassmorphism */
+  .glass-card {
+    background: rgba(255, 255, 255, 0.6);
+    backdrop-filter: blur(24px) saturate(1.5);
+    -webkit-backdrop-filter: blur(24px) saturate(1.5);
+    border: 1px solid rgba(255, 255, 255, 0.5);
   }
-  
-  /* No-Line utility */
-  .no-border {
-    border: none !important;
+
+  .glass-dark {
+    background: rgba(26, 61, 43, 0.7);
+    backdrop-filter: blur(24px) saturate(1.5);
+    -webkit-backdrop-filter: blur(24px) saturate(1.5);
+    border: 1px solid rgba(255, 255, 255, 0.08);
   }
-  
-  /* Asymmetric shadow rule */
-  .tonal-shadow {
-    box-shadow: 0 32px 64px -12px rgba(2, 39, 23, 0.04);
+
+  /* Premium diffused shadow */
+  .shadow-premium {
+    box-shadow: 0 4px 6px -1px rgba(0,0,0,0.04), 0 20px 40px -8px rgba(0,0,0,0.06), 0 60px 120px -24px rgba(0,0,0,0.08);
   }
-}
 
-/* Base UI Accordion Custom Styles */
-[data-slot="accordion"] {
-  display: flex !important;
-  flex-direction: column !important;
-  gap: 1rem !important;
-}
+  .shadow-ambient {
+    box-shadow: 0 2px 4px rgba(0,0,0,0.02), 0 8px 24px rgba(0,0,0,0.04);
+  }
 
-[data-slot="accordion-item"] {
-  background-color: var(--color-surface-lowest) !important;
-  border-radius: 24px !important;
-  padding: 0 1.5rem !important;
-  box-shadow: 0 4px 20px -2px rgba(0,0,0,0.02) !important;
-}
+  /* Gradient text */
+  .text-gradient {
+    background: linear-gradient(135deg, #1A3D2B 0%, #C8922A 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
 
-[data-slot="accordion-trigger"] {
-  padding: 1.5rem 0 !important;
-  font-family: var(--font-noto-serif) !important;
-  font-weight: 700 !important;
-  font-size: 1.125rem !important;
-}
-
-[data-slot="accordion-content"] {
-  font-family: var(--font-plus-jakarta) !important;
+  /* Animated reveal */
+  .animate-fade-up {
+    animation: fadeUp 0.8s cubic-bezier(0.22,1,0.36,1) forwards;
+  }
 }

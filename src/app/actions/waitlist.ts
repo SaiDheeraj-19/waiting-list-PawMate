@@ -39,7 +39,7 @@ export async function joinWaitlist(data: {
       .values({ ...data, referral_code })
       .returning()
 
-    if (process.env.RESEND_API_KEY) {
+    if (process.env.RESEND_API_KEY && process.env.RESEND_API_KEY !== 're_123456789') {
       await resend.emails.send({
         from:    'PawMate <hello@pawmate.app>',
         to:      data.email,
@@ -120,7 +120,7 @@ export async function joinWaitlist(data: {
                 ⭐ Refer 3 friends → 3 months free premium
               </p>
               <p style="color:#1A3D2B;margin:4px 0">
-                👑 Refer 10 friends → Lifetime free premium
+                👑 Refer 10 friends → 2 years free premium
               </p>
             </div>
 
@@ -145,6 +145,9 @@ export async function joinWaitlist(data: {
           </div>
         `,
       })
+    } else {
+      console.log('📭 Email suppressed because RESEND_API_KEY is not set or is a placeholder.');
+      console.log(`To send real emails to ${data.email}, please add a valid Resend API key to .env.local!`);
     }
 
     return {

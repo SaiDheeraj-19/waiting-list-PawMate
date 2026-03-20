@@ -1,62 +1,79 @@
 'use client';
 
 import React from 'react';
+import Image from 'next/image';
 import { motion } from 'framer-motion';
 
 const steps = [
   {
-    number: "1",
-    title: "Create profile",
-    description: "Tell us about your pet's personality, favorite toys, and what they're looking for."
+    n: '01',
+    title: 'Build your pet\'s profile',
+    body: 'Create a rich profile with photos, personality traits, breed details, and what you\'re looking for — playdates, breeding, or just friendship.',
+    img: '/dog_portrait.jpg',
   },
   {
-    number: "2",
-    title: "Browse pets",
-    description: "Filter by species, breed, location, and intent (Playdates or Breeding)."
+    n: '02',
+    title: 'Discover nearby matches',
+    body: 'Browse pets filtered by species, breed, age, distance, and intent. Our algorithm surfaces the best-fit companions first.',
+    img: '/cat_portrait.jpg',
   },
   {
-    number: "3",
-    title: "Connect owners",
-    description: "Safe, encrypted chat to organize meetups at local parks or pet-friendly spots."
-  }
+    n: '03',
+    title: 'Connect safely',
+    body: 'Chat through our encrypted messaging system. You control when and how much to share before arranging a meetup.',
+    img: '/pets_playing.jpg',
+  },
 ];
 
 export const HowItWorksSection = () => {
   return (
-    <section id="how-it-works" className="bg-brand-bg py-40 md:py-64 px-4 overflow-hidden relative">
-      <div className="max-w-7xl mx-auto flex flex-col items-center">
+    <section id="how-it-works" className="bg-[#F9F7F3] py-40 md:py-56 px-6 md:px-12 overflow-hidden">
+      <div className="max-w-7xl mx-auto">
         
-        <motion.div 
-          className="text-center mb-32"
+        {/* Section header */}
+        <motion.div
+          className="mb-24 md:mb-40 max-w-2xl"
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
+          transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
         >
-          <h2 className="text-5xl md:text-8xl font-noto font-black text-primary tracking-tight leading-tight mb-8 underline decoration-accent/40 decoration-[6px] underline-offset-[16px]">
-            How PawMate works
+          <div className="flex items-center gap-3 mb-8">
+            <div className="w-1.5 h-1.5 rounded-full bg-[#C8922A]" />
+            <p className="font-jakarta text-[10px] font-black uppercase tracking-[0.25em] text-[#1A1A1A]/35">How it works</p>
+          </div>
+          <h2 className="font-noto font-black text-[#1A3D2B] text-[48px] md:text-[80px] leading-[0.95] tracking-[-0.03em]">
+            Simple.<br />Safe.<br />Social.
           </h2>
-          <p className="text-lg md:text-xl font-jakarta font-medium text-brand-muted max-w-xl mx-auto">
-            From first sniff to best friends — we make pet social networking safe and simple.
-          </p>
         </motion.div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-16 w-full max-w-6xl">
+        {/* Steps row — alternating layout */}
+        <div className="flex flex-col gap-8 md:gap-10">
           {steps.map((step, i) => (
-            <motion.div 
+            <motion.div
               key={i}
-              className="bg-surface-low rounded-[3rem] p-12 flex flex-col items-start gap-8 relative transition-transform hover:-translate-y-2"
-              initial={{ opacity: 0, scale: 0.95 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true }}
-              transition={{ delay: i * 0.2, duration: 0.8 }}
+              className={`flex flex-col ${i % 2 === 1 ? 'md:flex-row-reverse' : 'md:flex-row'} gap-6 md:gap-10 items-center`}
+              initial={{ opacity: 0, y: 40 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: '-80px' }}
+              transition={{ duration: 1, delay: 0.1 * i, ease: [0.22, 1, 0.36, 1] }}
             >
-              <div className="w-16 h-16 rounded-full bg-primary flex items-center justify-center text-white font-noto font-black text-2xl shadow-xl shadow-primary/20">
-                {step.number}
+              {/* Image */}
+              <div className="w-full md:w-[55%] relative rounded-[40px] overflow-hidden aspect-[16/10]">
+                <Image src={step.img} alt={step.title} fill className="object-cover" sizes="55vw" />
+                <div className="absolute inset-0 bg-gradient-to-br from-transparent to-[#1A3D2B]/10" />
               </div>
-              <div>
-                <h3 className="text-2xl font-noto font-black text-primary mb-4 tracking-tight">{step.title}</h3>
-                <p className="text-brand-muted font-jakarta font-medium leading-relaxed text-sm md:text-base">
-                  {step.description}
+
+              {/* Text */}
+              <div className="w-full md:w-[45%] flex flex-col px-0 md:px-8">
+                <span className="font-noto font-black text-[#1A1A1A]/10 text-[120px] leading-none tracking-tight mb-4 select-none">
+                  {step.n}
+                </span>
+                <h3 className="font-noto font-black text-[#1A3D2B] text-[30px] md:text-[40px] leading-[1.05] tracking-tight mb-6 -mt-8">
+                  {step.title}
+                </h3>
+                <p className="font-jakarta font-medium text-[#1A1A1A]/50 text-base md:text-lg leading-[1.7]">
+                  {step.body}
                 </p>
               </div>
             </motion.div>

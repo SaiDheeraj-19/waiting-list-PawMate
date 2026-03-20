@@ -1,9 +1,9 @@
 'use client';
 
 import React from 'react';
-import { motion, useInView } from 'framer-motion';
-import { PawPrintSVG } from '../svg/PawPrintSVG';
-import { MapPin, Star } from 'lucide-react';
+import Image from 'next/image';
+import { motion } from 'framer-motion';
+import { useInView } from 'framer-motion';
 
 interface StatsProps {
   initialStats?: {
@@ -15,55 +15,79 @@ interface StatsProps {
 
 export const StatsSection = ({ initialStats }: StatsProps) => {
   const ref = React.useRef(null);
-  const isInView = useInView(ref, { once: true });
-
+  const isInView = useInView(ref, { once: true, margin: "-100px" });
   const stats = initialStats || { total: 42000, cities: 156, top_pet: 'Golden Retriever' };
 
   return (
-    <section ref={ref} className="bg-brand-bg py-40 md:py-64 px-4 overflow-hidden relative">
-      <div className="max-w-7xl mx-auto flex flex-col md:flex-row gap-8 items-center justify-center relative z-10">
+    <section ref={ref} className="bg-[#F9F7F3] py-40 md:py-56 px-6 md:px-12 overflow-hidden">
+      <div className="max-w-7xl mx-auto">
         
-        {/* Total Profiles Profile Profile Profile Card */}
-        <motion.div 
-          className="w-full md:w-[400px] h-[320px] bg-primary rounded-[4rem] md:rounded-[5rem] flex flex-col items-center justify-center text-white/90 relative p-12 overflow-hidden shadow-2xl shadow-primary/10 transition-transform hover:scale-105"
-          initial={{ opacity: 0, y: 30 }}
-          animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.8, delay: 0.2 }}
-        >
-          <div className="absolute top-10 flex items-center justify-center opacity-20"><PawPrintSVG size={32} color="currentColor" /></div>
-          <div className="text-5xl md:text-[80px] font-noto font-black text-white leading-none mb-4 tabular-nums">
-            {stats.total.toLocaleString()}+
-          </div>
-          <p className="text-[11px] md:text-sm font-jakarta font-black uppercase tracking-[0.2em] opacity-40">Profiles Ready</p>
-        </motion.div>
+        {/* Section label */}
+        <div className="flex items-center gap-3 mb-20">
+          <div className="w-1.5 h-1.5 rounded-full bg-[#C8922A]" />
+          <p className="font-jakarta text-[10px] font-black uppercase tracking-[0.25em] text-[#1A1A1A]/35">By the numbers</p>
+        </div>
 
-        {/* Cities Card Cities Cities Card Card */}
-        <motion.div 
-          className="w-full md:w-[400px] h-[320px] bg-surface-low rounded-[4rem] md:rounded-[5rem] flex flex-col items-center justify-center text-primary relative p-12 shadow-[0_32px_64px_rgba(0,0,0,0.03)] transition-transform hover:scale-105"
-          initial={{ opacity: 0, y: 30 }}
-          animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration:0.8, delay: 0.4 }}
-        >
-          <div className="absolute top-10 flex items-center justify-center opacity-20"><MapPin size={32} color="currentColor" /></div>
-          <div className="text-5xl md:text-[80px] font-noto font-black text-primary leading-none mb-4 tabular-nums">
-            {stats.cities}+
-          </div>
-          <p className="text-[11px] md:text-sm font-jakarta font-black uppercase tracking-[0.2em] opacity-40">Cities Live</p>
-        </motion.div>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
+          
+          {/* Stat 1 — Total pets */}
+          <motion.div
+            className="relative rounded-[40px] overflow-hidden bg-[#1A3D2B] aspect-[4/5] flex flex-col justify-end p-10"
+            initial={{ opacity: 0, y: 40 }}
+            animate={isInView ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 1, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
+          >
+            <div className="absolute inset-0 opacity-20">
+              <Image src="/dog_portrait.jpg" alt="" fill className="object-cover" sizes="33vw" />
+            </div>
+            <div className="relative z-10">
+              <p className="font-noto font-black text-[72px] md:text-[96px] text-white leading-none tracking-tight tabular-nums">
+                {stats.total >= 1000 ? `${Math.floor(stats.total / 1000)}K` : stats.total}+
+              </p>
+              <p className="mt-2 font-jakarta text-xs font-bold uppercase tracking-[0.2em] text-white/40">
+                Profiles Created
+              </p>
+            </div>
+          </motion.div>
 
-        {/* Top Breed Card Top Breed Top Breed Card */}
-        <motion.div 
-          className="w-full md:w-[400px] h-[320px] bg-accent rounded-[4rem] md:rounded-[5rem] flex flex-col items-center justify-center text-primary relative p-12 shadow-2xl shadow-accent/10 transition-transform hover:scale-105"
-          initial={{ opacity: 0, y: 30 }}
-          animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration:0.8, delay: 0.6 }}
-        >
-          <div className="absolute top-10 flex items-center justify-center opacity-20"><Star size={32} color="currentColor" /></div>
-          <div className="text-3xl md:text-[52px] font-noto font-black text-primary leading-tight mb-4 text-center">
-            {stats.top_pet}
-          </div>
-          <p className="text-[11px] md:text-sm font-jakarta font-black uppercase tracking-[0.2em] opacity-40">Top Breed This Week</p>
-        </motion.div>
+          {/* Stat 2 — Cities */}
+          <motion.div
+            className="relative rounded-[40px] overflow-hidden bg-[#F3F1EC] aspect-[4/5] flex flex-col justify-end p-10"
+            initial={{ opacity: 0, y: 40 }}
+            animate={isInView ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 1, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
+          >
+            <div className="relative z-10">
+              <p className="font-noto font-black text-[72px] md:text-[96px] text-[#1A3D2B] leading-none tracking-tight tabular-nums">
+                {stats.cities}+
+              </p>
+              <p className="mt-2 font-jakarta text-xs font-bold uppercase tracking-[0.2em] text-[#1A1A1A]/30">
+                Cities Active
+              </p>
+            </div>
+          </motion.div>
+
+          {/* Stat 3 — Top breed */}
+          <motion.div
+            className="relative rounded-[40px] overflow-hidden aspect-[4/5] flex flex-col justify-end p-10"
+            style={{ backgroundColor: '#C8922A' }}
+            initial={{ opacity: 0, y: 40 }}
+            animate={isInView ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 1, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
+          >
+            <div className="absolute inset-0 opacity-30">
+              <Image src="/cat_portrait.jpg" alt="" fill className="object-cover" sizes="33vw" />
+            </div>
+            <div className="relative z-10">
+              <p className="font-noto font-black text-[40px] md:text-[56px] text-white leading-[1] tracking-tight">
+                {stats.top_pet}
+              </p>
+              <p className="mt-2 font-jakarta text-xs font-bold uppercase tracking-[0.2em] text-white/50">
+                Most Popular Breed
+              </p>
+            </div>
+          </motion.div>
+        </div>
       </div>
     </section>
   );

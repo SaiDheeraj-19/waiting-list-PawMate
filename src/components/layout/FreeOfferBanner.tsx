@@ -31,7 +31,7 @@ export const FreeOfferBanner = () => {
         className="fixed top-0 left-0 w-full bg-accent text-primary z-[100] h-[40px] md:h-[44px] flex items-center justify-center px-4"
       >
         <div className="flex items-center gap-4 text-[10px] md:text-xs font-jakarta font-black uppercase tracking-[0.2em] leading-none">
-          <span>Limited time: Get 1st month free!</span>
+          <span>Limited time: Get 1 year free!</span>
           <span className="opacity-40 select-none">|</span>
           <span className="flex items-center gap-2">
             ⏳ {timeLeft}

@@ -1,41 +1,25 @@
 'use client';
 
 import React, { useState } from 'react';
-import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion';
-import { PawPrintSVG } from '../svg/PawPrintSVG';
-import { HeartPawSVG } from '../svg/HeartPawSVG';
-import { DogSVG } from '../svg/DogSVG';
-import { CatSVG } from '../svg/CatSVG';
-import { RabbitSVG } from '../svg/RabbitSVG';
+import Image from 'next/image';
+import { motion } from 'framer-motion';
+import { ArrowRight } from 'lucide-react';
 import { joinWaitlist } from '@/app/actions/waitlist';
 import { useRouter } from 'next/navigation';
-import { ArrowRight } from 'lucide-react';
 
-export const HeroSection = () => {
+export const HeroSection = ({ totalWaitlistCount = 0 }: { totalWaitlistCount?: number }) => {
   const [email, setEmail] = useState('');
+  const [city, setCity] = useState('');
   const [loading, setLoading] = useState(false);
   const router = useRouter();
 
-  const mouseX = useMotionValue(0);
-  const mouseY = useMotionValue(0);
-  const rotateX = useSpring(useTransform(mouseY, [-300, 300], [5, -5]), { stiffness: 100, damping: 30 });
-  const rotateY = useSpring(useTransform(mouseX, [-300, 300], [-5, 5]), { stiffness: 100, damping: 30 });
-
-  const handleMouseMove = (e: React.MouseEvent) => {
-    const rect = e.currentTarget.getBoundingClientRect();
-    const x = e.clientX - rect.left - rect.width / 2;
-    const y = e.clientY - rect.top - rect.height / 2;
-    mouseX.set(x);
-    mouseY.set(y);
-  };
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!email) return;
+    if (!email || !city) return;
     setLoading(true);
     try {
       const referredBy = typeof window !== 'undefined' ? localStorage.getItem('referred_by') || undefined : undefined;
-      const result = await joinWaitlist({ email, referred_by: referredBy });
+      const result = await joinWaitlist({ email, city, referred_by: referredBy });
       if (result.success || result.error === 'already_exists') {
         router.push(`/joined?code=${result.referral_code || ''}`);
       }
@@ -47,159 +31,145 @@ export const HeroSection = () => {
   };
 
   return (
-    <section 
-      className="relative min-h-[95vh] flex flex-col md:flex-row items-center justify-center pt-32 pb-20 px-4 md:px-16 overflow-hidden bg-brand-bg"
-      onMouseMove={handleMouseMove}
-    >
-      {/* Left Content column column column */}
-      <motion.div 
-        className="w-full md:w-1/2 flex flex-col items-start z-20 text-left"
-        initial={{ opacity: 0, x: -30 }}
-        animate={{ opacity: 1, x: 0 }}
-        transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
-      >
-        <div className="flex items-center gap-2 mb-8 bg-surface-low rounded-full px-4 py-1.5 transition-all text-xs font-bold text-primary tracking-widest uppercase">
-          <PawPrintSVG size={14} color="#1A3D2B" />
-          <span>Limited time: Get 1st month free! 🐾</span>
-        </div>
+    <section className="relative min-h-screen w-full overflow-hidden bg-[#F9F7F3]">
+      
+      {/* FULL-BLEED IMAGE — top right organic shape */}
+      <div className="absolute top-0 right-0 w-[52%] h-full hidden md:block">
+        <Image
+          src="/hero_pets.jpg"
+          alt="Golden retriever and Persian cat sitting together"
+          fill
+          className="object-cover object-center"
+          priority
+          sizes="52vw"
+        />
+        {/* Left gradient overlay */}
+        <div className="absolute inset-0 bg-gradient-to-r from-[#F9F7F3] via-[#F9F7F3]/50 to-transparent" />
+        {/* Bottom gradient overlay */}
+        <div className="absolute inset-0 bg-gradient-to-t from-[#F9F7F3]/80 via-transparent to-transparent" />
+      </div>
 
-        <h1 className="text-[52px] md:text-[100px] font-noto font-black text-primary leading-[0.9] mb-10 tracking-tight">
-          Your pet <br /> deserves a <br />
-          <span className="text-accent italic relative inline-block">
-            love life
-            <motion.div 
-              initial={{ scale: 0, rotate: -30 }}
-              animate={{ scale: 1, rotate: 0 }}
-              transition={{ delay: 1, type: 'spring' }}
-              className="absolute -top-6 -right-12 hidden md:block"
-            >
-              <HeartPawSVG size={48} color="#E85D4A" />
-            </motion.div>
-          </span> too.
-        </h1>
+      {/* Mobile full-bleed */}
+      <div className="relative w-full h-[55vw] md:hidden">
+        <Image src="/hero_pets.jpg" alt="Pets" fill className="object-cover object-center" priority sizes="100vw"/>
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-[#F9F7F3]" />
+      </div>
 
-        <p className="text-lg md:text-xl font-jakarta text-brand-muted mb-12 max-w-lg leading-relaxed font-medium">
-          PawMate connects pet owners for playdates, friendship, and breeding. The premier social club for the furry, feathered, and scaled.
-        </p>
-
-        <form 
-          onSubmit={handleSubmit}
-          className="flex flex-col md:flex-row bg-white rounded-3xl md:rounded-full border-2 border-black/5 p-1 w-full max-w-xl shadow-2xl shadow-primary/5 focus-within:border-primary/20 transition-all"
-        >
-          <input 
-            type="email" 
-            placeholder="Enter your email" 
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-            className="flex-1 bg-transparent px-8 py-4 outline-none font-jakarta text-primary font-semibold"
-          />
-          <button 
-            type="submit" 
-            disabled={loading}
-            className="bg-primary text-[#FAF8F4] font-jakarta font-bold px-10 py-4 rounded-full flex items-center justify-center gap-3 hover:bg-accent transition-all group disabled:opacity-70"
-          >
-            {loading ? '🐾 Connecting...' : (
-              <>Join Free <ArrowRight className="group-hover:translate-x-1" size={20} /></>
-            )}
-          </button>
-        </form>
-
-        <div className="mt-6 flex flex-wrap gap-8 text-[11px] font-bold text-brand-muted/70 uppercase tracking-widest pl-2">
-           <span className="flex items-center gap-2">🛡️ Free forever for early members</span>
-           <span className="flex items-center gap-2">🐾 No spam, just paws</span>
-        </div>
-
-        {/* Live counter bar row row row row row row */}
-        <div className="mt-16 flex items-center gap-4">
-          <div className="flex -space-x-3">
-             {[1,2,3,4,5].map(i => (
-               <div key={i} className={`w-10 h-10 rounded-full border-2 border-brand-bg flex items-center justify-center font-bold text-white text-xs ${i % 2 === 0 ? 'bg-accent' : 'bg-primary'}`}>{['D','C','R','B','H'][i-1]}</div>
-             ))}
-          </div>
-          <div className="font-jakarta text-sm font-black text-primary/80">
-            <span className="text-primary">12,482</span> pet owners on waitlist
-          </div>
-        </div>
-      </motion.div>
-
-      {/* Right Content asymmetric cards deck deck deck deck */}
-      <div className="w-full md:w-1/2 relative h-[600px] mt-20 md:mt-0 flex items-center justify-center md:items-start md:justify-end">
+      {/* Content */}
+      <div className="relative z-10 max-w-7xl mx-auto px-6 md:px-12 flex flex-col justify-center min-h-screen pt-40 md:pt-48 pb-20">
         
-        {/* Under-Right Card Rabbit Thumper */}
-        <motion.div 
-          className="absolute z-10 md:top-[250px] md:right-[-50px] translate-x-10 rotate-[12deg] md:rotate-[15deg]"
-          style={{ rotateX, rotateY }}
-          initial={{ opacity: 0, scale: 0.8, x: 100 }}
-          animate={{ opacity: 1, scale: 1, x: 0 }}
-          transition={{ delay: 0.8, duration: 1 }}
+        {/* Top label */}
+        <motion.div
+          initial={{ opacity: 0, y: 24 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.9, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
+          className="flex items-center gap-3 mb-10"
         >
-          <PetCard 
-            name="Thumper" 
-            breed="English Lop" 
-            status="PLAYDATE" 
-            bg="bg-primary" 
-            icon={<RabbitSVG size={140} color="white" />} 
-          />
+          <div className="w-1.5 h-1.5 rounded-full bg-[#C8922A]" />
+          <p className="font-jakarta text-[10px] font-black uppercase tracking-[0.25em] text-[#1A1A1A]/40">
+            Now open — limited spots available
+          </p>
         </motion.div>
 
-        {/* Under-Left Card Cat Luna */}
-        <motion.div 
-          className="absolute z-15 md:top-[120px] md:right-[150px] translate-x-[-20px] rotate-[-8deg] md:rotate-[-10deg]"
-          style={{ rotateX, rotateY }}
-          initial={{ opacity: 0, scale: 0.8, x: -100 }}
-          animate={{ opacity: 1, scale: 1, x: 0 }}
-          transition={{ delay: 0.6, duration: 1 }}
+        {/* Headline */}
+        <motion.h1
+          initial={{ opacity: 0, y: 32 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 1, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
+          className="font-noto font-black text-[#1A3D2B] text-[52px] md:text-[96px] leading-[0.95] tracking-[-0.03em] max-w-[640px]"
         >
-          <PetCard 
-            name="Luna" 
-            breed="Persian Cat" 
-            status="BREEDING" 
-            bg="bg-accent" 
-            icon={<CatSVG size={150} color="white" />} 
-          />
+          Find the<br />
+          perfect<br />
+          <em className="not-italic text-[#C8922A]">match.</em><br />
+          For your pet.
+        </motion.h1>
+
+        {/* Sub-headline */}
+        <motion.p
+          initial={{ opacity: 0, y: 24 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.9, delay: 0.35, ease: [0.22, 1, 0.36, 1] }}
+          className="mt-10 font-jakarta text-[#1A1A1A]/55 text-lg md:text-xl font-medium leading-[1.65] max-w-md"
+        >
+          PawMate is the premier pet social platform — designed for playdates, breeding connections, and lifelong friendships between animals and their humans.
+        </motion.p>
+
+        {/* Waitlist form */}
+        <motion.div
+          id="waitlist"
+          initial={{ opacity: 0, y: 24 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.9, delay: 0.5, ease: [0.22, 1, 0.36, 1] }}
+          className="mt-12 flex flex-col gap-4 max-w-md w-full"
+        >
+          <form onSubmit={handleSubmit} className="flex flex-col gap-3">
+            <div className="flex flex-col sm:flex-row gap-3">
+              <input
+                type="text"
+                placeholder="City"
+                value={city}
+                onChange={e => setCity(e.target.value)}
+                required
+                className="flex-[0.7] bg-white border border-black/[0.06] rounded-full px-7 py-4 font-jakarta font-medium text-sm text-[#1A1A1A] placeholder:text-[#1A1A1A]/30 outline-none focus:border-[#1A3D2B]/30 focus:ring-4 focus:ring-[#1A3D2B]/5 transition-all shadow-ambient"
+              />
+              <input
+                type="email"
+                placeholder="Your email address"
+                value={email}
+                onChange={e => setEmail(e.target.value)}
+                required
+                className="flex-[1.3] bg-white border border-black/[0.06] rounded-full px-7 py-4 font-jakarta font-medium text-sm text-[#1A1A1A] placeholder:text-[#1A1A1A]/30 outline-none focus:border-[#1A3D2B]/30 focus:ring-4 focus:ring-[#1A3D2B]/5 transition-all shadow-ambient"
+              />
+            </div>
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full bg-[#1A3D2B] text-white px-8 py-4 rounded-full font-jakarta font-bold text-sm flex items-center justify-center gap-2.5 hover:bg-[#C8922A] transition-all duration-500 shadow-lg shadow-[#1A3D2B]/15 disabled:opacity-60 active:scale-95 whitespace-nowrap group"
+            >
+              {loading ? 'Joining...' : (
+                <>
+                  Reserve Your Spot
+                  <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
+                </>
+              )}
+            </button>
+          </form>
+
+          <p className="font-jakarta text-[10px] font-bold uppercase tracking-[0.2em] text-[#1A1A1A]/25 pl-2">
+            Free for 1 year for founding members · No credit card required
+          </p>
         </motion.div>
 
-        {/* Top-Center Card Dog Cooper */}
-        <motion.div 
-          className="absolute z-30 md:top-[0px] md:right-[0px] rotate-[3deg] shadow-2xl scale-110"
-          style={{ rotateX, rotateY }}
-          initial={{ opacity: 0, y: 100, scale: 1.2 }}
-          animate={{ opacity: 1, y: 0, scale: 1.1 }}
-          transition={{ delay: 0.4, duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
+        {/* Live Social proof */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 1, delay: 0.75 }}
+          className="mt-16 flex items-center gap-6"
         >
-          <PetCard 
-            name="Cooper" 
-            breed="Golden Retriever · 2y" 
-            status="PLAYDATE" 
-            bg="bg-primary/90" 
-            icon={<DogSVG size={160} color="white" />} 
-            featured 
-          />
+          <div className="flex -space-x-3">
+            {['/dog_portrait.jpg', '/cat_portrait.jpg', '/rabbit_portrait.jpg'].map((src, i) => (
+              <div key={i} className="w-11 h-11 rounded-full border-2 border-[#F9F7F3] overflow-hidden shadow-md">
+                <Image src={src} alt="" width={44} height={44} className="object-cover w-full h-full" />
+              </div>
+            ))}
+          </div>
+          <div>
+            <div className="font-noto font-black text-2xl text-[#1A3D2B]">
+              {totalWaitlistCount.toLocaleString()}
+            </div>
+            <div className="font-jakarta text-[10px] font-bold uppercase tracking-[0.2em] text-[#1A1A1A]/35">pet owners on the waitlist</div>
+          </div>
         </motion.div>
 
-        {/* Scattered Background elements scattered scattered */}
-        <div className="absolute top-0 right-0 w-full h-full opacity-[0.03] pointer-events-none select-none">
-          <PawPrintSVG size={600} color="#1A3D2B" className="rotate-45" />
-        </div>
+      </div>
+
+      {/* Decorative corner label */}
+      <div className="absolute bottom-12 right-12 hidden md:block">
+        <p className="font-jakarta text-[9px] font-black uppercase tracking-[0.3em] text-[#1A1A1A]/20 rotate-90 origin-bottom-right">
+          Est. 2026 &mdash; India
+        </p>
       </div>
     </section>
   );
 };
-
-const PetCard = ({ name, breed, status, bg, icon, featured }: any) => (
-  <div className={`w-[240px] md:w-[280px] bg-white rounded-[48px] overflow-hidden tonal-shadow border border-black/5 flex flex-col group p-4 gap-4 transition-transform ${featured ? 'md:w-[320px]' : ''}`}>
-    <div className={`aspect-square rounded-[36px] ${bg} flex items-center justify-center p-8 transition-all group-hover:scale-105 duration-500 relative`}>
-      <div className="absolute top-4 right-4 bg-accent text-primary px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest transform rotate-[-3deg] shadow-lg">
-        {status}
-      </div>
-      <div className="filter drop-shadow-2xl">
-        {icon}
-      </div>
-    </div>
-    <div className="px-2 pb-2">
-      <h3 className="font-noto font-black text-2xl text-primary leading-tight mb-1">{name}</h3>
-      <p className="font-jakarta text-xs font-bold text-brand-muted/70 uppercase tracking-widest">{breed}</p>
-    </div>
-  </div>
-);

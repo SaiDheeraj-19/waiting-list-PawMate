@@ -3,12 +3,12 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Menu, X } from 'lucide-react';
-import { LogoSVG } from '../svg/LogoSVG';
+import { PawPrintSVG } from '@/components/svg/PawPrintSVG';
 
 const links = [
   { name: 'How it works', href: '#how-it-works' },
-  { name: 'Free offer', href: '#free-offer' },
-  { name: 'Pets', href: '#pet-types' },
+  { name: 'Features', href: '#features' },
+  { name: 'Gallery', href: '#gallery' },
   { name: 'FAQ', href: '#faq' },
 ];
 
@@ -17,72 +17,94 @@ export const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
-    const handleScroll = () => setScrolled(window.scrollY > 100);
+    const handleScroll = () => setScrolled(window.scrollY > 40);
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
   return (
-    <nav className={`fixed left-0 w-full z-50 transition-all duration-500 top-[40px] md:top-[44px] ${scrolled ? 'py-4 glass border-b border-black/5' : 'py-8 md:py-12 bg-transparent'}`}>
-      <div className="max-w-7xl mx-auto px-6 md:px-12 flex items-center justify-between">
-        {/* Logo left column row */}
-        <Link href="/" className="flex items-center group transition-transform hover:scale-105 active:scale-95">
-          <LogoSVG size={180} />
-        </Link>
+    <>
+      {/* Floating glass capsule nav */}
+      <div className={`fixed top-0 left-0 w-full z-[60] flex justify-center transition-all duration-700 ${
+        scrolled ? 'pt-3' : 'pt-6'
+      }`}>
+        <nav className={`
+          transition-all duration-700 w-full
+          ${scrolled
+            ? 'mx-4 md:mx-8 max-w-6xl rounded-full border border-white/20 bg-white/60 backdrop-blur-2xl shadow-lg shadow-black/[0.07] px-5 py-3'
+            : 'max-w-7xl rounded-none border-transparent bg-transparent px-6 md:px-12 py-3'
+          }
+        `}>
+          <div className="flex items-center justify-between">
 
-        {/* Desktop Links centered row row */}
-        <div className="hidden md:flex items-center gap-12 absolute left-1/2 -translate-x-1/2">
-          {links.map(link => (
-            <Link 
-              key={link.name} 
-              href={link.href} 
-              className="text-xs font-jakarta font-black uppercase tracking-[0.2em] text-primary hover:text-accent transition-all duration-300 relative group"
-            >
-              {link.name}
-              <span className="absolute -bottom-2 left-0 w-0 h-[2px] bg-accent transition-all group-hover:w-full"></span>
+            {/* Logo */}
+            <Link href="/" className="flex items-center gap-2.5 group">
+              <div className="w-9 h-9 rounded-full bg-[#1A3D2B] flex items-center justify-center shadow-md shadow-[#1A3D2B]/20 group-hover:scale-105 transition-transform duration-300">
+                <PawPrintSVG color="white" size={18} />
+              </div>
+              <span className="font-noto font-black text-[19px] text-[#1A3D2B] tracking-tight">PawMate</span>
             </Link>
-          ))}
-        </div>
 
-        {/* Desktop CTA right column row */}
-        <Link 
-          href="#join-form" 
-          className="hidden md:flex items-center gap-3 bg-primary text-[#FAF8F4] px-8 py-3.5 rounded-full font-jakarta font-black text-xs uppercase tracking-widest shadow-xl shadow-primary/10 hover:bg-accent transition-all duration-300 active:scale-95"
-        >
-          <span>Join Free 🐾</span>
-        </Link>
+            {/* Center links */}
+            <div className="hidden md:flex items-center gap-8">
+              {links.map(link => (
+                <Link
+                  key={link.name}
+                  href={link.href}
+                  className="text-[11px] font-jakarta font-bold uppercase tracking-[0.18em] text-[#1A1A1A]/50 hover:text-[#1A3D2B] transition-colors duration-300"
+                >
+                  {link.name}
+                </Link>
+              ))}
+            </div>
 
-        {/* Mobile Hamburger menu row row */}
-        <button 
-          onClick={() => setIsOpen(!isOpen)}
-          className="md:hidden p-2 text-primary hover:bg-black/5 rounded-full"
-        >
-          {isOpen ? <X size={24} /> : <Menu size={24} />}
-        </button>
+            {/* CTA */}
+            <Link
+              href="#waitlist"
+              className="hidden md:flex items-center gap-2 bg-[#1A3D2B] text-white px-6 py-2.5 rounded-full font-jakarta font-bold text-sm hover:bg-[#C8922A] transition-all duration-500 shadow-md shadow-[#1A3D2B]/15 active:scale-95"
+            >
+              Join Waitlist
+            </Link>
+
+            {/* Mobile menu */}
+            <button
+              onClick={() => setIsOpen(!isOpen)}
+              className="md:hidden p-2 text-[#1A3D2B]"
+            >
+              {isOpen ? <X size={24} /> : <Menu size={24} />}
+            </button>
+          </div>
+        </nav>
       </div>
 
-      {/* Mobile Drawer row row row row row row */}
+      {/* Mobile Drawer */}
       {isOpen && (
-        <div className="md:hidden glass h-screen w-full absolute top-0 left-0 flex flex-col items-center justify-center gap-8 py-20 animate-fade-in px-8">
-           {links.map(link => (
-            <a 
-              key={link.name} 
-              href={link.href} 
+        <div className="fixed inset-0 z-[55] bg-[#F9F7F3]/95 backdrop-blur-3xl flex flex-col items-center justify-center gap-10 md:hidden">
+          <Link href="/" onClick={() => setIsOpen(false)} className="flex items-center gap-3">
+            <div className="w-12 h-12 rounded-full bg-[#1A3D2B] flex items-center justify-center">
+              <PawPrintSVG color="white" size={22} />
+            </div>
+            <span className="font-noto font-black text-4xl text-[#1A3D2B]">PawMate</span>
+          </Link>
+          {links.map(link => (
+            <a
+              key={link.name}
+              href={link.href}
               onClick={() => setIsOpen(false)}
-              className="text-2xl font-noto font-black text-primary hover:text-accent"
+              className="font-jakarta text-2xl font-semibold text-[#1A1A1A]/60 hover:text-[#1A3D2B]"
             >
               {link.name}
             </a>
           ))}
-          <Link 
-            href="#join-form" 
+          <Link
+            href="#waitlist"
             onClick={() => setIsOpen(false)}
-            className="w-full bg-primary text-white py-6 rounded-full font-jakarta font-black text-center shadow-lg"
+            className="mt-6 bg-[#1A3D2B] text-white px-12 py-5 rounded-full font-jakarta font-bold text-base"
           >
-            JOIN FREE 🐾
+            Join Waitlist
           </Link>
         </div>
       )}
-    </nav>
+    </>
   );
 };

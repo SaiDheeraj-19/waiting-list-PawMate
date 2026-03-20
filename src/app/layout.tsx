@@ -1,28 +1,33 @@
 import type { Metadata } from "next";
 import { Noto_Serif, Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
-import { FreeOfferBanner } from "@/components/layout/FreeOfferBanner";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
-import { BackgroundPattern } from "@/components/layout/BackgroundPattern";
 
 const notoSerif = Noto_Serif({
   subsets: ["latin"],
   variable: "--font-noto-serif",
   weight: ["400", "700", "900"],
+  display: "swap",
 });
 
 const plusJakarta = Plus_Jakarta_Sans({
   subsets: ["latin"],
   variable: "--font-plus-jakarta",
   weight: ["400", "500", "600", "700", "800"],
+  display: "swap",
 });
 
 export const metadata: Metadata = {
-  title: "PawMate · Digital Curator for Pets",
+  title: "PawMate — Find the Perfect Match. For Your Pet.",
   description:
-    "Join the waitlist for PawMate, the premier social club for the furry, feathered, and scaled.",
-  keywords: "pet matchmaking, dog playdates, pet breeding, animal community",
+    "Join 12,000+ pet owners on the PawMate waitlist. The world's most beautiful pet matchmaking platform for playdates, breeding, and genuine animal friendships.",
+  keywords: "pet matchmaking, dog playdates, pet social network, cat breeding, rabbit playdate",
+  openGraph: {
+    title: "PawMate — Pet Matchmaking Reimagined",
+    description: "Join the waitlist for the world's most beautiful pet social platform.",
+    type: "website",
+  },
 };
 
 export default function RootLayout({
@@ -32,9 +37,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={`${notoSerif.variable} ${plusJakarta.variable}`}>
-      <body className="antialiased min-h-screen font-plus-jakarta bg-[#faf8f4] text-[#1c1c1e]">
-        <BackgroundPattern />
-        <FreeOfferBanner />
+      <body>
         <Navbar />
         {children}
         <Footer />

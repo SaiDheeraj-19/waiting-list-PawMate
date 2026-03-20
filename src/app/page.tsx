@@ -13,16 +13,16 @@ export default async function Home() {
   const stats = await getWaitlistStats();
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between">
-      <HeroSection />
+    <main>
+      <HeroSection totalWaitlistCount={stats.total} />
       <FreeOfferSection />
       <StatsSection initialStats={{ total: stats.total, cities: stats.cities, top_pet: stats.top_pet }} />
       <HowItWorksSection />
-      <PetTypesSection perType={stats.per_type as { pet_type: string; count: number }[]} />
+      <PetTypesSection />
       <FeaturesSection />
       <ReferralSection />
       <FAQSection />
-      <FinalCTASection />
+      <FinalCTASection totalWaitlistCount={stats.total} />
     </main>
   );
 }
