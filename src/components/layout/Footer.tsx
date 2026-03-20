@@ -2,7 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
-import Image from 'next/image';
+import { LogoSVG } from '@/components/svg/LogoSVG';
 
 export const Footer = () => {
   return (
@@ -14,7 +14,7 @@ export const Footer = () => {
           
           {/* Logo */}
           <Link href="/" className="flex items-center group">
-            <Image src="/logo.png" alt="PawMate" width={140} height={40} className="h-8 w-auto object-contain invert mix-blend-screen group-hover:opacity-80 transition-opacity duration-300" />
+            <LogoSVG size={140} color="white" className="h-8 w-auto group-hover:opacity-80 transition-opacity duration-300" />
           </Link>
 
           {/* Nav links */}
