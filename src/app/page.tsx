@@ -9,6 +9,8 @@ import { ReferralSection } from '@/components/sections/ReferralSection';
 import { FAQSection } from '@/components/sections/FAQSection';
 import { FinalCTASection } from '@/components/sections/FinalCTASection';
 
+export const dynamic = 'force-dynamic';
+
 export default async function Home() {
   const stats = await getWaitlistStats();
 
