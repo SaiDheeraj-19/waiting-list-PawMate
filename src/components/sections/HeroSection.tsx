@@ -22,7 +22,7 @@ export const HeroSection = ({ totalWaitlistCount = 0 }: { totalWaitlistCount?: n
       const referredBy = typeof window !== 'undefined' ? localStorage.getItem('referred_by') || undefined : undefined;
       const result = await joinWaitlist({ email, city, referred_by: referredBy });
       if (result.success || result.error === 'already_exists') {
-        router.push(`/joined?code=${result.referral_code || ''}`);
+        router.push(`/joined?code=${result.referral_code || ''}&pos=${result.position || ''}`);
       }
     } catch (err) {
       console.error(err);
@@ -145,7 +145,11 @@ export const HeroSection = ({ totalWaitlistCount = 0 }: { totalWaitlistCount?: n
 
           {/* Google Button */}
           <form action={async () => {
-            if (city) document.cookie = `waitlist_city=${encodeURIComponent(city)}; path=/; max-age=3600`;
+            if (!city) {
+              alert("Wait! Please type your City first — so we know where PawMate is needed! 🐾");
+              return;
+            }
+            document.cookie = `waitlist_city=${encodeURIComponent(city)}; path=/; max-age=3600`;
             await signInWithGoogle();
           }}>
             <button

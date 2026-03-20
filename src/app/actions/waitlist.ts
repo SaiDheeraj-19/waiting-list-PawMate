@@ -218,3 +218,14 @@ export async function updatePetPreferences(
     .where(eq(waitlist.email, email))
   return { success: true }
 }
+
+export async function getWaitlistEntryByEmail(email: string) {
+  const [entry] = await db
+    .select()
+    .from(waitlist)
+    .where(eq(waitlist.email, email))
+    .limit(1);
+
+  if (!entry) return null;
+  return entry;
+}

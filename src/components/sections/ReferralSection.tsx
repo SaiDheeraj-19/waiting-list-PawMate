@@ -9,18 +9,18 @@ const tiers = [
   {
     label: '1 referral',
     title: 'Silver Badge',
-    perk: 'Priority in search results',
+    perk: 'Skip 100 spots instantly',
   },
   {
-    label: '5 referrals',
+    label: '3 referrals',
     title: 'Gold Access',
-    perk: 'Early alpha access — no ads, ever',
+    perk: '3 months free premium',
     featured: true,
   },
   {
     label: '10 referrals',
     title: 'Founding Member',
-    perk: 'Lifetime Premium — absolutely free',
+    perk: '2 years free premium',
   },
 ];
 

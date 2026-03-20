@@ -14,7 +14,8 @@ import { RabbitSVG } from '@/components/svg/RabbitSVG';
 import { BirdSVG } from '@/components/svg/BirdSVG';
 import { CollarSVG } from '@/components/svg/CollarSVG';
 import { Copy, Share2, CheckCircle2 } from 'lucide-react';
-import { getReferralCount, updatePetPreferences } from '@/app/actions/waitlist';
+import { getReferralCount, updatePetPreferences, getWaitlistEntryByEmail } from '@/app/actions/waitlist';
+import { getCurrentUserSession } from '@/app/actions/auth';
 
 export default function JoinedPage() {
   return (
@@ -28,13 +29,15 @@ function JoinedContent() {
   const searchParams = useSearchParams();
   const code = searchParams.get('code') || '';
   const pos = searchParams.get('pos') || '1';
+  const [position, setPosition] = useState<string | number>(pos);
+  const [referralCode, setReferralCode] = useState<string>(code);
   const [copied, setCopied] = useState(false);
   const [referrals, setReferrals] = useState(0);
   const [petType, setPetType] = useState<string | null>(null);
   const [intent, setIntent] = useState<string | null>(null);
   const [saved, setSaved] = useState(false);
 
-  const referralLink = `${process.env.NEXT_PUBLIC_APP_URL || 'https://waitlist.pawmate.app'}/refer/${code}`;
+  const referralLink = `${process.env.NEXT_PUBLIC_APP_URL || 'https://waitlist.pawmate.app'}/refer/${referralCode}`;
 
   useEffect(() => {
     // Confetti confetti confetti
@@ -62,10 +65,23 @@ function JoinedContent() {
       }
     }());
 
-    if (code) {
-      getReferralCount(code).then(res => setReferrals(res.count));
+    if (referralCode) {
+      getReferralCount(referralCode).then(res => setReferrals(res.count));
     }
-  }, [code]);
+    
+    // Auto-fetch real data if params are missing (like after Google redirect)
+    const fetchRealData = async () => {
+      const session = await getCurrentUserSession();
+      if (session?.user?.email) {
+        const entry = await getWaitlistEntryByEmail(session.user.email);
+        if (entry) {
+          if (!referralCode) setReferralCode(entry.referral_code || '');
+          if (position === '1') setPosition(entry.position);
+        }
+      }
+    };
+    fetchRealData();
+  }, [referralCode, position]);
 
   const copyToClipboard = () => {
     navigator.clipboard.writeText(referralLink);
@@ -129,7 +145,7 @@ function JoinedContent() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.5, type: 'spring' }}
               >
-                {Number(pos).toLocaleString()}
+                {Number(position || 1).toLocaleString()}
               </motion.span>
             </div>
             <p className="text-sm font-bold text-primary/60 bg-primary/5 px-4 py-2 rounded-full mb-8">You are in the top 5% of early members 🐾</p>
