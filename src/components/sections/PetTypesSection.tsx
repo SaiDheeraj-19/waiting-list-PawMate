@@ -5,10 +5,10 @@ import Image from 'next/image';
 import { motion } from 'framer-motion';
 
 const gallery = [
-  { src: '/dog_portrait.jpg', label: 'Dogs', sub: '6.2k profiles' },
-  { src: '/cat_portrait.jpg', label: 'Cats', sub: '5.4k profiles' },
-  { src: '/rabbit_portrait.jpg', label: 'Rabbits', sub: '1.1k profiles' },
-  { src: '/pet_owner_lifestyle.jpg', label: 'Owners', sub: '12k members' },
+  { src: '/dog_portrait.jpg', label: 'Dogs' },
+  { src: '/cat_portrait.jpg', label: 'Cats' },
+  { src: '/rabbit_portrait.jpg', label: 'Rabbits' },
+  { src: '/pet_owner_lifestyle.jpg', label: 'Owners' },
 ];
 
 export const PetTypesSection = () => {
@@ -62,7 +62,6 @@ export const PetTypesSection = () => {
               <div className="absolute inset-0 bg-gradient-to-t from-[#1A3D2B]/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
               <div className="absolute bottom-0 left-0 p-6 translate-y-4 group-hover:translate-y-0 opacity-0 group-hover:opacity-100 transition-all duration-500">
                 <p className="font-noto font-black text-white text-xl">{item.label}</p>
-                <p className="font-jakarta text-[10px] font-bold uppercase tracking-[0.2em] text-white/50 mt-1">{item.sub}</p>
               </div>
             </motion.div>
           ))}

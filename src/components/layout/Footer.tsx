@@ -2,6 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 
 export const Footer = () => {
   return (
@@ -12,17 +13,8 @@ export const Footer = () => {
         <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-10 pb-14 border-b border-white/[0.06]">
           
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center">
-              <svg viewBox="0 0 20 20" width="14" height="14" fill="white" opacity="0.7">
-                <circle cx="7" cy="15" r="3.5"/>
-                <circle cx="14" cy="9" r="2.8"/>
-                <circle cx="6" cy="8" r="2.8"/>
-                <circle cx="13" cy="15.5" r="2.4"/>
-                <circle cx="10" cy="12" r="4"/>
-              </svg>
-            </div>
-            <span className="font-noto font-black text-xl text-white tracking-tight">PawMate</span>
+          <Link href="/" className="flex items-center group">
+            <Image src="/logo.png" alt="PawMate" width={140} height={40} className="h-8 w-auto group-hover:opacity-80 transition-opacity duration-300 brightness-0 invert" />
           </Link>
 
           {/* Nav links */}

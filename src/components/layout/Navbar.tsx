@@ -2,8 +2,8 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { Menu, X } from 'lucide-react';
-import { PawPrintSVG } from '@/components/svg/PawPrintSVG';
 
 const links = [
   { name: 'How it works', href: '#how-it-works' },
@@ -38,11 +38,8 @@ export const Navbar = () => {
           <div className="flex items-center justify-between">
 
             {/* Logo */}
-            <Link href="/" className="flex items-center gap-2.5 group">
-              <div className="w-9 h-9 rounded-full bg-[#1A3D2B] flex items-center justify-center shadow-md shadow-[#1A3D2B]/20 group-hover:scale-105 transition-transform duration-300">
-                <PawPrintSVG color="white" size={18} />
-              </div>
-              <span className="font-noto font-black text-[19px] text-[#1A3D2B] tracking-tight">PawMate</span>
+            <Link href="/" className="flex items-center group">
+              <Image src="/logo.png" alt="PawMate" width={140} height={40} className="h-8 w-auto group-hover:scale-105 transition-transform duration-300" priority />
             </Link>
 
             {/* Center links */}
@@ -80,11 +77,8 @@ export const Navbar = () => {
       {/* Mobile Drawer */}
       {isOpen && (
         <div className="fixed inset-0 z-[55] bg-[#F9F7F3]/95 backdrop-blur-3xl flex flex-col items-center justify-center gap-10 md:hidden">
-          <Link href="/" onClick={() => setIsOpen(false)} className="flex items-center gap-3">
-            <div className="w-12 h-12 rounded-full bg-[#1A3D2B] flex items-center justify-center">
-              <PawPrintSVG color="white" size={22} />
-            </div>
-            <span className="font-noto font-black text-4xl text-[#1A3D2B]">PawMate</span>
+          <Link href="/" onClick={() => setIsOpen(false)} className="flex items-center">
+            <Image src="/logo.png" alt="PawMate" width={160} height={46} className="h-10 w-auto" />
           </Link>
           {links.map(link => (
             <a
