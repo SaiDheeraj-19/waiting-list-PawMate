@@ -194,7 +194,7 @@ export async function getWaitlistStats() {
   return {
     total:    total.count,
     cities:   cities.length,
-    top_pet:  petTypes[0]?.pet_type ?? 'dog',
+    top_pet:  total.count === 0 ? 'TBD' : (petTypes[0]?.pet_type ?? 'TBD'),
     per_type: perType,
   }
 }
