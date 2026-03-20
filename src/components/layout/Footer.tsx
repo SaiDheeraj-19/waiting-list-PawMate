@@ -14,7 +14,7 @@ export const Footer = () => {
           
           {/* Logo */}
           <Link href="/" className="flex items-center group">
-            <Image src="/logo.png" alt="PawMate" width={140} height={40} className="h-8 w-auto group-hover:opacity-80 transition-opacity duration-300 brightness-0 invert" />
+            <Image src="/logo.png" alt="PawMate" width={140} height={40} className="h-8 w-auto object-contain invert mix-blend-screen group-hover:opacity-80 transition-opacity duration-300" />
           </Link>
 
           {/* Nav links */}

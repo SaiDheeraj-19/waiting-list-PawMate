@@ -39,7 +39,7 @@ export const Navbar = () => {
 
             {/* Logo */}
             <Link href="/" className="flex items-center group">
-              <Image src="/logo.png" alt="PawMate" width={140} height={40} className="h-8 w-auto group-hover:scale-105 transition-transform duration-300" priority />
+              <Image src="/logo.png" alt="PawMate" width={140} height={40} className="h-7 md:h-8 w-auto object-contain mix-blend-multiply group-hover:scale-105 transition-transform duration-300" priority />
             </Link>
 
             {/* Center links */}
@@ -78,7 +78,7 @@ export const Navbar = () => {
       {isOpen && (
         <div className="fixed inset-0 z-[55] bg-[#F9F7F3]/95 backdrop-blur-3xl flex flex-col items-center justify-center gap-10 md:hidden">
           <Link href="/" onClick={() => setIsOpen(false)} className="flex items-center">
-            <Image src="/logo.png" alt="PawMate" width={160} height={46} className="h-10 w-auto" />
+            <Image src="/logo.png" alt="PawMate" width={160} height={46} className="h-10 w-auto object-contain mix-blend-multiply" />
           </Link>
           {links.map(link => (
             <a
