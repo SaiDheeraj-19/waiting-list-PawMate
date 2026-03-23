@@ -4,9 +4,10 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Menu, X, User, LogOut } from 'lucide-react';
 import { LogoSVG } from '@/components/svg/LogoSVG';
-import { getCurrentUserSession, signInWithGoogle, signOutUser } from '@/app/actions/auth';
+import { getCurrentUserSession, signInWithGoogle } from '@/app/actions/auth';
 import { Session } from 'next-auth';
 import Image from 'next/image';
+import { signOut } from 'next-auth/react';
 
 const links = [
   { name: 'How it works', href: '#how-it-works' },
@@ -92,10 +93,7 @@ export const Navbar = () => {
                     Account
                   </Link>
                   <button 
-                    onClick={async () => {
-                      await signOutUser();
-                      window.location.href = "/";
-                    }}
+                    onClick={() => signOut({ callbackUrl: '/' })}
                     className="p-2 text-[#1A1A1A]/30 hover:text-red-500 transition-colors"
                     title="Logout"
                   >
@@ -158,11 +156,7 @@ export const Navbar = () => {
                 My Account 🐾
               </Link>
               <button
-                onClick={async () => {
-                  await signOutUser();
-                  setIsOpen(false);
-                  window.location.href = "/";
-                }}
+                onClick={() => signOut({ callbackUrl: '/' })}
                 className="text-red-500 font-jakarta font-bold text-sm"
               >
                 Logout
