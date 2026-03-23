@@ -92,7 +92,10 @@ export const Navbar = () => {
                     Account
                   </Link>
                   <button 
-                    onClick={() => signOutUser()}
+                    onClick={async () => {
+                      await signOutUser();
+                      window.location.href = "/";
+                    }}
                     className="p-2 text-[#1A1A1A]/30 hover:text-red-500 transition-colors"
                     title="Logout"
                   >
@@ -155,7 +158,11 @@ export const Navbar = () => {
                 My Account 🐾
               </Link>
               <button
-                onClick={() => signOutUser()}
+                onClick={async () => {
+                  await signOutUser();
+                  setIsOpen(false);
+                  window.location.href = "/";
+                }}
                 className="text-red-500 font-jakarta font-bold text-sm"
               >
                 Logout
