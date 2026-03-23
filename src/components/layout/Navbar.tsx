@@ -19,6 +19,7 @@ export const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [session, setSession] = useState<Session | null>(null);
+  const [imgError, setImgError] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 40);
@@ -78,13 +79,14 @@ export const Navbar = () => {
                     href="/joined"
                     className="flex items-center gap-2 bg-[#F3F1EC] text-[#1A3D2B] px-5 py-2.5 rounded-full font-jakarta font-bold text-sm border border-black/5 hover:bg-white transition-all active:scale-95 group"
                   >
-                    {session.user?.image ? (
+                    {session.user?.image && !imgError ? (
                       <Image 
                         src={session.user.image} 
                         width={20} 
                         height={20} 
-                        className="rounded-full" 
+                        className="rounded-full object-cover" 
                         alt="Profile" 
+                        onError={() => setImgError(true)}
                       />
                     ) : <User size={14} />}
                     Account
