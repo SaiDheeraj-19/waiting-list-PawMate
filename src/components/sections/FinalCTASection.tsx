@@ -36,7 +36,7 @@ export const FinalCTASection = ({ totalWaitlistCount = 0 }: { totalWaitlistCount
       
       {/* Background image subtle */}
       <div className="absolute inset-0 opacity-[0.07]">
-        <Image src="/pet_owner_lifestyle.jpg" alt="" fill className="object-cover" sizes="100vw" />
+        <Image src="/pet_owner_lifestyle.jpg" alt="" fill className="object-cover" sizes="100vw" priority />
       </div>
 
       <div className="relative z-10 max-w-7xl mx-auto flex flex-col items-center text-center">

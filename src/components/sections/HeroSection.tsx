@@ -42,7 +42,7 @@ export const HeroSection = ({ totalWaitlistCount = 0 }: { totalWaitlistCount?: n
           fill
           className="object-cover object-center"
           priority
-          sizes="52vw"
+          sizes="(max-width: 768px) 100vw, 52vw"
         />
         {/* Left gradient overlay */}
         <div className="absolute inset-0 bg-gradient-to-r from-[#F9F7F3] via-[#F9F7F3]/50 to-transparent" />
@@ -52,7 +52,7 @@ export const HeroSection = ({ totalWaitlistCount = 0 }: { totalWaitlistCount?: n
 
       {/* Mobile full-bleed */}
       <div className="relative w-full h-[55vw] md:hidden">
-        <Image src="/hero_pets.jpg" alt="Pets" fill className="object-cover object-center" priority sizes="100vw"/>
+        <Image src="/hero_pets.jpg" alt="Pets" fill className="object-cover object-center" priority sizes="(max-width: 768px) 100vw, 52vw"/>
         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-[#F9F7F3]" />
       </div>
 

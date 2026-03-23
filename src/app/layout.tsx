@@ -36,7 +36,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${notoSerif.variable} ${plusJakarta.variable}`}>
+    <html lang="en" className={`${notoSerif.variable} ${plusJakarta.variable}`} data-scroll-behavior="smooth">
       <body>
         <Navbar />
         {children}
