@@ -13,9 +13,9 @@ import { CatSVG } from '@/components/svg/CatSVG';
 import { RabbitSVG } from '@/components/svg/RabbitSVG';
 import { BirdSVG } from '@/components/svg/BirdSVG';
 import { CollarSVG } from '@/components/svg/CollarSVG';
-import { Copy, Share2, CheckCircle2 } from 'lucide-react';
+import { Copy, Share2, CheckCircle2, User } from 'lucide-react';
 import { getReferralCount, updatePetPreferences, getWaitlistEntryByEmail, updateUserCity } from '@/app/actions/waitlist';
-import { getCurrentUserSession } from '@/app/actions/auth';
+import { getCurrentUserSession, signInWithGoogle } from '@/app/actions/auth';
 
 export default function JoinedPage() {
   return (
@@ -39,8 +39,9 @@ function JoinedContent() {
   const [userCity, setUserCity] = useState<string>('');
   const [isCityMissing, setIsCityMissing] = useState(false);
   const [saved, setSaved] = useState(false);
+  const [loading, setLoading] = useState(true);
 
-  const referralLink = `${process.env.NEXT_PUBLIC_APP_URL || 'https://waitlist.pawmate.app'}/refer/${referralCode}`;
+  const referralLink = `${(typeof window !== 'undefined' ? window.location.origin : '') || 'https://waitlist.pawmate.app'}/refer/${referralCode}`;
 
   useEffect(() => {
     // Confetti confetti confetti
@@ -74,23 +75,29 @@ function JoinedContent() {
     
     // Auto-fetch real data if params are missing (like after Google redirect)
     const fetchRealData = async () => {
-      const session = await getCurrentUserSession();
-      if (session?.user?.email) {
-        setEmail(session.user.email);
-        const entry = await getWaitlistEntryByEmail(session.user.email);
-        if (entry) {
-          if (!referralCode) setReferralCode(entry.referral_code || '');
-          if (position === '1') setPosition(entry.position);
-          if (entry.pet_type) setPetType(entry.pet_type);
-          if (entry.intent) setIntent(entry.intent);
-          if (entry.city) {
-            setUserCity(entry.city);
-            setIsCityMissing(false);
-          } else {
-            setIsCityMissing(true);
+      try {
+        const session = await getCurrentUserSession();
+        if (session?.user?.email) {
+          setEmail(session.user.email);
+          const entry = await getWaitlistEntryByEmail(session.user.email);
+          if (entry) {
+            if (!referralCode) setReferralCode(entry.referral_code || '');
+            if (position === '1') setPosition(entry.position);
+            if (entry.pet_type) setPetType(entry.pet_type);
+            if (entry.intent) setIntent(entry.intent);
+            if (entry.city) {
+              setUserCity(entry.city);
+              setIsCityMissing(false);
+            } else {
+              setIsCityMissing(true);
+            }
+            if (entry.pet_type && entry.intent && entry.city) setSaved(true);
           }
-          if (entry.pet_type && entry.intent && entry.city) setSaved(true);
         }
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setLoading(false);
       }
     };
     fetchRealData();
@@ -115,8 +122,44 @@ function JoinedContent() {
     }
   };
 
+  if (loading && !referralCode) {
+    return (
+      <div className="min-h-screen bg-brand-bg flex flex-col items-center justify-center font-dm-sans py-20">
+        <div className="animate-spin mb-4"><PawPrintSVG size={48} color="#1A3D2B" /></div>
+        <p className="text-primary font-bold">Fetching your spot...</p>
+      </div>
+    );
+  }
+
+  if (!loading && !email && !referralCode) {
+    return (
+      <div className="min-h-screen bg-brand-bg flex flex-col items-center justify-center font-dm-sans py-20 px-6">
+        <div className="bg-white p-12 rounded-[40px] shadow-2xl shadow-primary/5 text-center max-w-md w-full">
+           <div className="bg-accent/10 w-20 h-20 rounded-3xl flex items-center justify-center mx-auto mb-8">
+             <User size={40} className="text-accent" />
+           </div>
+           <h1 className="text-3xl font-playfair font-black text-primary mb-4">Login required</h1>
+           <p className="text-brand-muted font-medium mb-10">Sign in to see your waitlist position and referral progress.</p>
+           <button 
+             onClick={() => signInWithGoogle()}
+             className="w-full bg-primary text-white font-bold py-5 rounded-full shadow-xl shadow-primary/20 hover:bg-accent transition-all active:scale-95"
+           >
+             Continue with Google 🐾
+           </button>
+        </div>
+      </div>
+    );
+  }
+
+  const getCurrentTier = () => {
+    if (referrals >= 10) return "Royal Pack member";
+    if (referrals >= 3) return "Star member";
+    if (referrals >= 1) return "Early Adopter";
+    return "Founding member";
+  };
+
   return (
-    <main className="min-h-screen bg-brand-bg py-24 px-4 overflow-hidden relative font-dm-sans">
+    <main className="min-h-screen bg-brand-bg pb-24 pt-32 px-4 overflow-hidden relative font-dm-sans">
       <div className="max-w-4xl mx-auto z-10 relative">
         {/* Celebration header header header header */}
         <div className="text-center mb-16 flex flex-col items-center">
@@ -143,6 +186,15 @@ function JoinedContent() {
           
           <h1 className="text-4xl md:text-7xl font-playfair font-black text-primary leading-tight mb-4">You are in! 🎉</h1>
           <p className="text-xl text-brand-muted max-w-xl mx-auto font-medium">Welcome to the PawMate family! Your spot on the list is reserved.</p>
+          
+          <motion.div 
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 1 }}
+            className="mt-6 inline-flex items-center gap-2 bg-accent/20 text-primary px-4 py-2 rounded-full text-xs font-black uppercase tracking-widest border border-accent/30"
+          >
+             Current Status: <span className="text-accent">{getCurrentTier()}</span>
+          </motion.div>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start mb-16">
@@ -375,7 +427,15 @@ function JoinedContent() {
   );
 }
 
-const ReferralTier = ({ active, needed, current, reward, icon, color, level }: any) => {
+const ReferralTier = ({ active, needed, current, reward, icon, color, level }: {
+  active: boolean;
+  needed: number;
+  current: number;
+  reward: string;
+  icon: React.ReactNode;
+  color: string;
+  level: number;
+}) => {
   const progress = Math.min((current / needed) * 100, 100);
   
   return (

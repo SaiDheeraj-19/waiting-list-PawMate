@@ -5,6 +5,56 @@ import { eq, sql, count, desc } from 'drizzle-orm'
 import { Resend } from 'resend'
 import { nanoid } from 'nanoid'
 
+const CITY_MAPPINGS: Record<string, string> = {
+  'ctr':  'Chittoor',
+  'knl':  'Kurnool',
+  'vja':  'Vijayawada',
+  'viz':  'Visakhapatnam',
+  'tpt':  'Tirupati',
+  'gnt':  'Guntur',
+  'nlr':  'Nellore',
+  'hyd':  'Hyderabad',
+  'blr':  'Bangalore',
+  'vskp': 'Visakhapatnam',
+  'rjy':  'Rajahmundry',
+  'kad':  'Kadapa',
+  'atp':  'Anantapur',
+  'ong':  'Ongole',
+  'sklm': 'Srikakulam',
+  'vzm':  'Vizianagaram',
+  'tpl':  'Tadepalligudem',
+  'elr':  'Eluru',
+  'mtm':  'Machilipatnam',
+  'akp':  'Anakapalle',
+  'tpty': 'Tirupati',
+  'tpc':  'Tirupati',
+  'tpd':  'Tirupati',
+}
+
+const STATES_LOWER = [
+  'andhra pradesh', 'telangana', 'karnataka', 'tamil nadu', 'kerala',
+  'maharashtra', 'gujarat', 'rajasthan', 'madhya pradesh', 'uttar pradesh',
+  'bihar', 'west bengal', 'odisha', 'punjab', 'haryana', 'himachal pradesh',
+  'uttarakhand', 'goa', 'assam', 'sikkim', 'arunachal pradesh', 'nagaland',
+  'manipur', 'mizoram', 'tripura', 'meghalaya', 'jharkhand', 'chhattisgarh',
+  'andaman and nicobar islands', 'chandigarh', 'dadra and nagar haveli and daman and diu',
+  'jammu and kashmir', 'ladakh', 'lakshadweep', 'puducherry',
+  'ap', 'ts', 'ka', 'tn', 'kl', 'mh', 'gj', 'rj', 'mp', 'up', 'br', 'wb', 'od', 'pb', 'hr', 'hp', 'uk', 'ga', 'as', 'sk', 'ar', 'nl', 'mn', 'mz', 'tr', 'ml', 'jh', 'cg'
+]
+
+function normalizeCityName(city: string | undefined): string | undefined {
+  if (!city) return city
+  const lower = city.trim().toLowerCase()
+  if (CITY_MAPPINGS[lower]) {
+    return CITY_MAPPINGS[lower]
+  }
+  return city
+    .trim()
+    .split(/\s+/)
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+    .join(' ')
+}
+
 const resend = new Resend(process.env.RESEND_API_KEY)
 
 export async function joinWaitlist(data: {
@@ -32,11 +82,12 @@ export async function joinWaitlist(data: {
     }
 
     const referral_code = nanoid(8)
+    const normalizedCity = normalizeCityName(data.city)
 
     // Using returning() to get the serial position
     const [entry] = await db
       .insert(waitlist)
-      .values({ ...data, referral_code })
+      .values({ ...data, city: normalizedCity, referral_code })
       .returning()
 
     if (process.env.RESEND_API_KEY && process.env.RESEND_API_KEY !== 're_123456789') {
@@ -166,10 +217,22 @@ export async function getWaitlistStats() {
     .select({ count: count() })
     .from(waitlist)
 
-  const cities = await db
+  const citiesRaw = await db
     .selectDistinct({ city: waitlist.city })
     .from(waitlist)
     .where(sql`${waitlist.city} is not null`)
+
+  const uniqueCities = new Set<string>();
+  citiesRaw.forEach(c => {
+    if (!c.city) return;
+    const normalized = normalizeCityName(c.city);
+    if (normalized) {
+      const lower = normalized.toLowerCase();
+      if (!STATES_LOWER.includes(lower)) {
+        uniqueCities.add(normalized);
+      }
+    }
+  });
 
   const petTypes = await db
     .select({
@@ -193,7 +256,7 @@ export async function getWaitlistStats() {
 
   return {
     total:    total.count,
-    cities:   cities.length,
+    cities:   uniqueCities.size,
     top_pet:  total.count === 0 ? 'TBD' : (petTypes[0]?.pet_type ?? 'TBD'),
     per_type: perType,
   }
@@ -231,9 +294,10 @@ export async function getWaitlistEntryByEmail(email: string) {
 }
 
 export async function updateUserCity(email: string, city: string) {
+  const normalizedCity = normalizeCityName(city)
   await db
     .update(waitlist)
-    .set({ city })
+    .set({ city: normalizedCity })
     .where(eq(waitlist.email, email));
   return { success: true };
 }

@@ -2,8 +2,11 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { Menu, X } from 'lucide-react';
+import { Menu, X, User, LogOut } from 'lucide-react';
 import { LogoSVG } from '@/components/svg/LogoSVG';
+import { getCurrentUserSession, signInWithGoogle, signOutUser } from '@/app/actions/auth';
+import { Session } from 'next-auth';
+import Image from 'next/image';
 
 const links = [
   { name: 'How it works', href: '#how-it-works' },
@@ -15,10 +18,15 @@ const links = [
 export const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
+  const [session, setSession] = useState<Session | null>(null);
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 40);
     window.addEventListener('scroll', handleScroll);
+    
+    // Fetch session on load
+    getCurrentUserSession().then(setSession);
+
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
@@ -55,13 +63,48 @@ export const Navbar = () => {
               ))}
             </div>
 
-            {/* CTA */}
-            <Link
-              href="#waitlist"
-              className="hidden md:flex items-center gap-2 bg-[#1A3D2B] text-white px-6 py-2.5 rounded-full font-jakarta font-bold text-sm hover:bg-[#C8922A] transition-all duration-500 shadow-md shadow-[#1A3D2B]/15 active:scale-95"
-            >
-              Join Waitlist
-            </Link>
+            {/* CTA / Account */}
+            <div className="hidden md:flex items-center gap-4">
+              {!session ? (
+                <button
+                  onClick={() => signInWithGoogle()}
+                  className="flex items-center gap-2 bg-transparent text-[#1A3D2B] px-6 py-2.5 rounded-full font-jakarta font-bold text-sm border border-[#1A3D2B]/10 hover:bg-[#1A3D2B]/5 transition-all active:scale-95"
+                >
+                  Login
+                </button>
+              ) : (
+                <div className="flex items-center gap-4">
+                  <Link
+                    href="/joined"
+                    className="flex items-center gap-2 bg-[#F3F1EC] text-[#1A3D2B] px-5 py-2.5 rounded-full font-jakarta font-bold text-sm border border-black/5 hover:bg-white transition-all active:scale-95 group"
+                  >
+                    {session.user?.image ? (
+                      <Image 
+                        src={session.user.image} 
+                        width={20} 
+                        height={20} 
+                        className="rounded-full" 
+                        alt="Profile" 
+                      />
+                    ) : <User size={14} />}
+                    Account
+                  </Link>
+                  <button 
+                    onClick={() => signOutUser()}
+                    className="p-2 text-[#1A1A1A]/30 hover:text-red-500 transition-colors"
+                    title="Logout"
+                  >
+                    <LogOut size={18} />
+                  </button>
+                </div>
+              )}
+              <Link
+                href="#waitlist"
+                className="flex items-center gap-2 bg-[#1A3D2B] text-white px-6 py-2.5 rounded-full font-jakarta font-bold text-sm hover:bg-[#C8922A] transition-all duration-500 shadow-md shadow-[#1A3D2B]/15 active:scale-95"
+              >
+                Join Waitlist
+              </Link>
+            </div>
 
             {/* Mobile menu */}
             <button
@@ -90,10 +133,37 @@ export const Navbar = () => {
               {link.name}
             </a>
           ))}
+          {!session ? (
+             <button
+                onClick={() => {
+                  signInWithGoogle();
+                  setIsOpen(false);
+                }}
+                className="bg-white border border-[#1A1A1A]/10 text-[#1A1A1A] px-12 py-5 rounded-full font-jakarta font-bold text-base w-[70%] text-center"
+              >
+                Login
+              </button>
+          ) : (
+            <div className="flex flex-col gap-4 w-[70%]">
+              <Link
+                href="/joined"
+                onClick={() => setIsOpen(false)}
+                className="bg-[#F3F1EC] text-[#1A3D2B] px-12 py-5 rounded-full font-jakarta font-bold text-base text-center border border-black/5"
+              >
+                My Account 🐾
+              </Link>
+              <button
+                onClick={() => signOutUser()}
+                className="text-red-500 font-jakarta font-bold text-sm"
+              >
+                Logout
+              </button>
+            </div>
+          )}
           <Link
             href="#waitlist"
             onClick={() => setIsOpen(false)}
-            className="mt-6 bg-[#1A3D2B] text-white px-12 py-5 rounded-full font-jakarta font-bold text-base"
+            className="mt-2 bg-[#1A3D2B] text-white px-12 py-5 rounded-full font-jakarta font-bold text-base w-[70%] text-center"
           >
             Join Waitlist
           </Link>
